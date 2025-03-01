@@ -1,0 +1,4 @@
+pretrained_models/
+results/
+dataset/
+*.pyc
