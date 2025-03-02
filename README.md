@@ -34,7 +34,7 @@ Here's an overview of the process behind our **Neural Characteristic Function Ma
 
 ## 🛠️ Getting Started
 
-To get started with NCFM, follow the installation instructions below. We're also providing various examples to help you understand the potential applications of our method.
+To get started with NCFM, follow the installation instructions below.
 
 1.  Clone the repo
 
@@ -47,7 +47,7 @@ git clone https://github.com/gszfwsb/NCFM.git
 ```sh
 pip install -r requirements.txt
 ```
-3. Pretrain or you can get **[pretrained_model](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link)** from Google Drive.
+3. Pretrain or get **[pretrained_models](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link)** from Google Drive.
 ```sh
 
 cd pretrain
