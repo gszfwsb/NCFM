@@ -47,7 +47,7 @@ git clone https://github.com/gszfwsb/NCFM.git
 ```sh
 pip install -r requirements.txt
 ```
-3. Pretrain the models yourself, or download the **[pretrained_models](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link)** from Google Drive.
+3. Pretrain the models yourself, or download the **pretrained_models** from **[Google Drive](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link)  and [Huggingface](https://huggingface.co/maomaocun/NCFM/tree/main/pretrained_models)** 
 ```sh
 cd pretrain
 torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids} --config_path=../config/{dataset}.yaml
@@ -60,10 +60,10 @@ cd condense
 torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{dataset}.yaml
 
 ```
-5. Evaluation
+5. Evaluation or or **download the distillation dataset** from **[Google Drive](https://drive.google.com/drive/folders/1q9vLZZjioHa0Mn6FKbHTg_NkWy8kLyT-?usp=sharing) and [Huggingface](https://huggingface.co/maomaocun/NCFM/tree/main/NCFM_distillation_dataset)**.
 ```sh
 cd evaluation 
-torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc}  --config_path=../config/imagenet-1k.yaml --load_path= {condensed_dataset.pt}
+torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc}  --config_path=../config/imagenet-1k.yaml --load_path= {distillation_dataset.pt}
 ```
 
 ### :blue_book: Example Usage
