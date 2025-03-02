@@ -153,7 +153,11 @@ NCFM
     └── utils.py
 </pre>
 
+## :postbox: Contact
+If you have any questions, please contact [Shaobo Wang](gszfwsb.github.io)(`shaobowang1009@sjtu.edu.cn`).
+
 ## :pushpin: Citation
+If you find NCM useful for your research and applications, please cite using this BibTeX:
 
 ```bibtex
 @inproceedings{
