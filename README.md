@@ -58,14 +58,12 @@ torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids}
 4. Condense
 ```sh
 cd condense 
-
 torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{dataset}.yaml
 
 ```
 5. Evaluation
 ```sh
 cd evaluation 
-
 torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc}  --config_path=../config/imagenet-1k.yaml --load_path= {condensed_dataset.pt}
 ```
 
