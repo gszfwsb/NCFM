@@ -47,9 +47,8 @@ git clone https://github.com/gszfwsb/NCFM.git
 ```sh
 pip install -r requirements.txt
 ```
-3. Pretrain or get **[pretrained_models](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link)** from Google Drive.
+3. Pretrain the models yourself, or download the **[pretrained_models](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link)** from Google Drive.
 ```sh
-
 cd pretrain
 torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids} --config_path=../config/{dataset}.yaml
 
