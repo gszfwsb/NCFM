@@ -25,7 +25,7 @@ Here's an overview of the process behind our **Neural Characteristic Function Ma
 - [x] Evaluation code
 - [ ] Config files
 - [x] Pretrained models
-- [x] Distilled datasets
+- [ ] Distilled datasets
 - [ ] Continual learning code
 - [ ] Project page
 
