@@ -60,7 +60,7 @@ cd condense
 torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{dataset}.yaml
 
 ```
-5. Evaluation or or **download the distillation dataset** from **[Google Drive](https://drive.google.com/drive/folders/1q9vLZZjioHa0Mn6FKbHTg_NkWy8kLyT-?usp=sharing) and [Huggingface](https://huggingface.co/maomaocun/NCFM/tree/main/NCFM_distillation_dataset)**.
+5. Evaluation or **download the distillation dataset** from **[Google Drive](https://drive.google.com/drive/folders/1q9vLZZjioHa0Mn6FKbHTg_NkWy8kLyT-?usp=sharing) and [Huggingface](https://huggingface.co/maomaocun/NCFM/tree/main/NCFM_distillation_dataset)**.
 ```sh
 cd evaluation 
 torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc}  --config_path=../config/imagenet-1k.yaml --load_path= {distillation_dataset.pt}
