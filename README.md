@@ -84,80 +84,11 @@ torchrun --nproc_per_node=8 --nnodes=1 --master_port=34153 condense_script.py --
 
 
 
-
-## 📂 File Structure 
-<pre>
-NCFM 
-├── <span style="color:blue;">NCFM</span>
-│   ├── NCFM.py
-│   └── SampleNet.py
-├── <span style="color:red;">README.md</span>
-├── <span style="color:purple;">argsprocessor</span>
-│   └── args.py
-├── <span style="color:orange;">condense</span>
-│   ├── condense_script.py
-│   ├── imagenet-1k_preparation.py
-├── <span style="color:teal;">condenser</span>
-│   ├── Condenser.py
-│   ├── compute_loss.py
-│   ├── condense_transfom.py
-│   ├── decode.py
-│   ├── evaluate.py
-│   └── subsample.py
-├── <span style="color:darkcyan;">config</span>
-│   ├── cifar10.yaml
-│   ├── cifar100.yaml
-│   ├── imagefruit.yaml (TBD)
-│   ├── imagemeow.yaml (TBD)
-│   ├── imagenet-1k.yaml (TBD)
-│   ├── imagenette.yaml (TBD)
-│   ├── imagesquawk.yaml (TBD)
-│   ├── imagewoof.yaml (TBD)
-│   ├── imageyellow.yaml (TBD)
-│   └── tinyimagenet.yaml (TBD)
-├── <span style="color:brown;">data</span>
-│   ├──  __init__.py
-│   ├── augment.py
-│   ├── dataloader.py
-│   ├── dataset.py
-│   ├── dataset_statistics.py
-│   ├── save_img.py
-│   └── transform.py
-├── <span style="color:darkgreen;">evaluation</span>
-│   ├── evaluation_script.py
-├── <span style="color:indigo;">imagenet_subset</span>
-│   ├── class100.txt
-│   ├── classimagefruit.txt
-│   ├── classimagemeow.txt
-│   ├── classimagenette.txt
-│   ├── classimagesquawk.txt
-│   ├── classimagewoof.txt
-│   └── classimageyellow.txt
-├── <span style="color:darkblue;">models</span>
-│   ├── convnet.py
-│   ├── densenet_cifar.py
-│   ├── network.py
-│   ├── resnet.py
-│   └── resnet_ap.py
-├── <span style="color:darkred;">pretrain</span>
-│   ├── pretrain_script.py
-├── <span style="color:darkorange;">requirements.txt</span>
-└── <span style="color:darkslategray;">utils</span>
-    ├── __init__.py
-    ├── ddp.py
-    ├── diffaug.py
-    ├── experiment_tracker.py
-    ├── init_script.py
-    ├── mix_cut_up.py
-    ├── train_val.py
-    └── utils.py
-</pre>
-
 ## :postbox: Contact
 If you have any questions, please contact [Shaobo Wang](https://gszfwsb.github.io/)(`shaobowang1009@sjtu.edu.cn`).
 
 ## :pushpin: Citation
-If you find NCM useful for your research and applications, please cite using this BibTeX:
+If you find NCFM useful for your research and applications, please cite using this BibTeX:
 
 ```bibtex
 @inproceedings{
