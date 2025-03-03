@@ -91,7 +91,6 @@ If you have any questions, please contact [Shaobo Wang](https://gszfwsb.github.i
 
 ## :pushpin: Citation
 If you find NCFM useful for your research and applications, please cite using this BibTeX:
-If you find NCFM useful for your research and applications, please cite using this BibTeX:
 
 ```bibtex
 @misc{wang2025datasetdistillationneuralcharacteristic,
