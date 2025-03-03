@@ -94,11 +94,16 @@ If you find NCFM useful for your research and applications, please cite using th
 If you find NCFM useful for your research and applications, please cite using this BibTeX:
 
 ```bibtex
-@inproceedings{
-  wang2025dataset,
-  title={Dataset Distillation with Neural Characteristic Function: A Minmax Perspective},
-  author={Shaobo Wang and Yicun Yang and Zhiyuan Liu and Chenghao Sun and Xuming Hu and Conghui He and Linfeng Zhang},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  year={2025}
+@misc{wang2025datasetdistillationneuralcharacteristic,
+      title={Dataset Distillation with Neural Characteristic Function: A Minmax Perspective}, 
+      author={Shaobo Wang and Yicun Yang and Zhiyuan Liu and Chenghao Sun and Xuming Hu and Conghui He and Linfeng Zhang},
+      year={2025},
+      eprint={2502.20653},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2502.20653}, 
 }
 ```
+
+## Acknowledgement
+We sincerely thank the developers of the following projects for their valuable contributions and inspiration: [MTT](https://github.com/GeorgeCazenavette/mtt-distillation), [DATM](https://github.com/NUS-HPC-AI-Lab/DATM), [DC/DM](https://github.com/VICO-UoE/DatasetCondensation), [IDC](https://github.com/snu-mllab/Efficient-Dataset-Condensation), [SRe2L](https://github.com/VILA-Lab/SRe2L), [RDED](https://github.com/LINs-lab/RDED). We draw inspiration from these fantastic projects!
