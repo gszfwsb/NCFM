@@ -128,7 +128,7 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
         if (
             epoch % args.epoch_eval_interval == 0
             or epoch == args.evaluation_epochs
-            or (epoch % (args.epoch_eval_interval / 50) == 0 and args.ipc >= 50)
+            or (epoch % (args.epoch_eval_interval / 50) == 0 and args.ipc > 50)
         ):
             acc1, acc5, loss_val = validate(val_loader, model, val_criterion)
             is_best = acc1 > best_acc1
