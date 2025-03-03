@@ -57,13 +57,13 @@ torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids}
 4. Condense
 ```sh
 cd condense 
-torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{dataset}.yaml
+torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{ipc}/{dataset}.yaml
 
 ```
 5. Evaluation
 ```sh
 cd evaluation 
-torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc}  --config_path=../config/imagenet-1k.yaml --load_path= {distillation_dataset.pt}
+torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{ipc}/{dataset}.yaml --load_path={distilled_dataset.pt}
 ```
 
 ### :blue_book: Example Usage
@@ -72,14 +72,16 @@ torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_id
 
 ```sh
 #ipc50
-torchrun --nproc_per_node=8 --nnodes=1 --master_port=34153 condense_script.py --gpu="0,1,2,3,4,5,6,7" --ipc=50 --config_path=../config/cifar10.yaml
+cd condense
+torchrun --nproc_per_node=8 --nnodes=1 --master_port=34153 condense_script.py --gpu="0,1,2,3,4,5,6,7" --ipc=50 --config_path=../config/ipc50/cifar10.yaml
 ```
 
 2. CIFAR-100
 
 ```sh
 #ipc10
-torchrun --nproc_per_node=8 --nnodes=1 --master_port=34153 condense_script.py --gpu="0,1,2,3,4,5,6,7" --ipc=10 --config_path=../config/cifar100.yaml
+cd condense
+torchrun --nproc_per_node=8 --nnodes=1 --master_port=34153 condense_script.py --gpu="0,1,2,3,4,5,6,7" --ipc=10 --config_path=../config/ipc10/cifar100.yaml
 ```
 
 
