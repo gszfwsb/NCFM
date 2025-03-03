@@ -50,7 +50,7 @@ pip install -r requirements.txt
 3. Pretrain the models yourself, or download the **pretrained_models** from [Google Drive](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link). 
 ```sh
 cd pretrain
-torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids} --config_path=../config/{dataset}.yaml
+torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids} --config_path=../config/{ipc}/{dataset}.yaml
 
 ```
 
@@ -90,6 +90,7 @@ torchrun --nproc_per_node=8 --nnodes=1 --master_port=34153 condense_script.py --
 If you have any questions, please contact [Shaobo Wang](https://gszfwsb.github.io/)(`shaobowang1009@sjtu.edu.cn`).
 
 ## :pushpin: Citation
+If you find NCFM useful for your research and applications, please cite using this BibTeX:
 If you find NCFM useful for your research and applications, please cite using this BibTeX:
 
 ```bibtex
