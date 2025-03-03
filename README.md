@@ -2,7 +2,7 @@
 
 
 <div align="center"> 
-    <a href="https://doi.org/10.48550/arXiv.2502.20653"><img src="https://img.shields.io/badge/CVPR%202025-Poster-528dc7.svg" alt="Paper"></a>
+    <a href="https://doi.org/10.48550/arXiv.2502.20653"><img src="https://img.shields.io/badge/CVPR%202025-528dc7.svg" alt="Paper"></a>
     <a href="https://github.com/gszfwsb/NCFM/blob/main/LICENSE"> <img alt="License" src="https://img.shields.io/github/license/gszfwsb/NCFM?color=green"> </a>
 </div>
 
