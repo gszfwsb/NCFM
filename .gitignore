@@ -2,3 +2,5 @@ pretrained_models/
 results/
 dataset/
 *.pyc
+pretrained_models
+dataset
