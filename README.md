@@ -63,7 +63,7 @@ torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids}
 5. Evaluation
 ```sh
 cd evaluation 
-torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc}  --config_path=../config/imagenet-1k.yaml --load_path= {distillation_dataset.pt}
+torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{dataset}.yaml --load_path={distilled_dataset.pt}
 ```
 
 ### :blue_book: Example Usage
