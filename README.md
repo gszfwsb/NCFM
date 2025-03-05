@@ -23,6 +23,7 @@ Here's an overview of the process behind our **Neural Characteristic Function Ma
 
 - [x] Distillation code
 - [x] Evaluation code
+- [ ] sampling net
 - [ ] Config files
 - [ ] Pretrained models
 - [ ] Distilled datasets
