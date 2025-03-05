@@ -20,10 +20,10 @@ Here's an overview of the process behind our **Neural Characteristic Function Ma
 
 
 ## :mag: TODO
-
-- [x] Distillation code
+<font color="red">**We are currently organizing all the code. Stay tuned!**</font>
+- [ ] Distillation code
 - [x] Evaluation code
-- [ ] sampling net
+- [ ] Sampling network
 - [ ] Config files
 - [ ] Pretrained models
 - [ ] Distilled datasets
