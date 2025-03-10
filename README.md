@@ -1,4 +1,4 @@
-# [CVPR2025 Rating: 5/5/5] Dataset Distillation with Neural Characteristic Function: A Minmax Perspective 
+# [CVPR2025] Dataset Distillation with Neural Characteristic Function: A Minmax Perspective 
 
 Official PyTorch implementation of the paper ["Dataset Distillation with Neural Characteristic Function"](https://arxiv.org/abs/2502.20653) (NCFM) in CVPR 2025.
 
