@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.distributed as dist
 from utils.utils import update_feature_extractor
 from utils.ddp import gather_save_visualize, sync_distributed_metric
-from NCFM.NCFM import innerloss, interloss, mutil_layer_innerloss, CFLossFunc
+from NCFM.NCFM import match_loss, cailb_loss, mutil_layer_match_loss, CFLossFunc
 from NCFM.SampleNet import SampleNet
 from utils.experiment_tracker import TimingTracker, get_time
 from data.dataset import TensorDataset
@@ -231,8 +231,8 @@ class Condenser:
                 loader_real=loader_real,
                 sample_fn=loader_syn.class_sample,
                 aug_fn=aug,
-                inner_loss_fn=innerloss if args.depth <= 5 else mutil_layer_innerloss,
-                # inner_loss_fn=innerloss,
+                inner_loss_fn=match_loss if args.depth <= 5 else mutil_layer_match_loss,
+                # inner_loss_fn=match_loss,
                 optim_img=optim_img,
                 class_list=self.args.class_list,
                 timing_tracker=self.timing_tracker,
@@ -243,7 +243,7 @@ class Condenser:
                 calib_loss_total, calib_grad_mean = compute_calib_loss(
                     sample_fn=loader_syn.class_sample,
                     aug_fn=aug,
-                    inter_loss_fn=interloss,
+                    inter_loss_fn=cailb_loss,
                     optim_img=optim_img,
                     iter_calib=args.iter_calib,
                     class_list=self.args.class_list,

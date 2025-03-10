@@ -64,23 +64,19 @@ class CFLossFunc(nn.Module):
         return loss
 
 
-def innerloss(img_real, img_syn, model, args=None):
+def match_loss(img_real, img_syn, model, args=None):
     """Matching losses (feature or gradient)"""
     with torch.no_grad():
         _, feat_tg = model(img_real, return_features=True)
     _, feat = model(img_syn, return_features=True)
-
-    if args.dis_metrics == "MMD":
-        loss = torch.sum((feat.mean(0) - feat_tg.mean(0)) ** 2)
-    else:
-        feat = F.normalize(feat, dim=1)
-        feat_tg = F.normalize(feat_tg, dim=1)
-        t = None
-        loss = 300 * args.cf_loss_func(feat_tg, feat, t, args)
+    feat = F.normalize(feat, dim=1)
+    feat_tg = F.normalize(feat_tg, dim=1)
+    t = None
+    loss = 300 * args.cf_loss_func(feat_tg, feat, t, args)
     return loss
 
 
-def mutil_layer_innerloss(img_real, img_syn, model, args=None):
+def mutil_layer_match_loss(img_real, img_syn, model, args=None):
 
     # Ensure layer_index is a list
     assert isinstance(
@@ -116,7 +112,7 @@ def mutil_layer_innerloss(img_real, img_syn, model, args=None):
     return loss
 
 
-def interloss(img_syn, label_syn, trained_model):
+def cailb_loss(img_syn, label_syn, trained_model):
     logits = trained_model(img_syn, return_features=False)
     loss = F.cross_entropy(logits, label_syn)
     return loss
