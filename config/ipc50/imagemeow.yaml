@@ -1,7 +1,7 @@
 distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
-    workers: 8
+  workers: 8
 
 dataset:
   dataset: imagemeow
