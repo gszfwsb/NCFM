@@ -60,7 +60,6 @@ condense:
   iter_calib: 1 
   calib_weight: 1
   sampling_net: False
-  calib_weight: 1
   num_freqs: 4096
   dis_metrics: "NCFM"
   factor: 2
