@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--init',type=str,default='load',choices=['random', 'noise', 'mix', 'load'],help='condensed data initialization type')
     parser.add_argument('--load_path',type=str,required=True,help="Path to load the synset")
     parser.add_argument('--val_repeat',type=int,default=10,help='The times of validation on syn_dataset Imagenet only 3 times')
-    parser.add_argument('--gpu', type=str, default = "0",required=True, help='GPUs to use, e.g., "0,1,2,3"')  # 设置为 str 类型
+    parser.add_argument('--gpu', type=str, default = "0",required=True, help='GPUs to use, e.g., "0,1,2,3"')
     parser.add_argument('-i', '--ipc', type=int, default=1, help='number of condensed data per class')
     parser.add_argument('--tf32', action='store_true',default=True,help='Enable TF32')
     parser.add_argument('--softlabel',dest='softlabel',action='store_true',help='Use the softlabel to evaluate the dataset')
