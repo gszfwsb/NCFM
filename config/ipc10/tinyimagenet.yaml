@@ -2,26 +2,25 @@ distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
   workers: 8
-
 dataset:
-  dataset: cifar10
-  nclass: 10
-  size: 32
+  dataset: tinyimagenet
+  nclass: 200
+  size: 64
   data_dir: '../dataset'
   load_memory: true
-  batch_real: 1024
+  batch_real: 128
   nch: 3
 
 network:
   net_type: convnet
   norm_type: instance
-  depth: 3
+  depth: 4
   width: 1.0
 
 train:
-  evaluation_epochs: 2000
+  evaluation_epochs: 300
   epoch_print_freq: 10
-  epoch_eval_interval: 100
+  epoch_eval_interval: 50
   pertrain_epochs: 60
   batch_size: 128
   lr: 0.01
@@ -45,7 +44,7 @@ augmentation:
 optimization:
   optimizer: adamw
   lr_scale_adam: 0.1
-  lr_img: 0.01  
+  lr_img: 0.01 
   mom_img: 0.5
   lr_sampling_net: 1e-3
 
@@ -54,13 +53,12 @@ save_path:
   pretrain_dir: '../pretrained_models'
 
 condense:
-  ipc: 50
+  ipc: 10
   num_premodel: 20
   niter: 20000
   iter_calib: 0 
   calib_weight: 1
   sampling_net: False
-  calib_weight: 1
   num_freqs: 4096
   dis_metrics: "NCFM"
   factor: 2
@@ -68,3 +66,4 @@ condense:
   beta_for_loss: 0.5
   decode_type: 'single' # choices=['single', 'multi', 'bound']
   teacher_model_epoch: 20
+

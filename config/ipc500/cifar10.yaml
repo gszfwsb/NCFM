@@ -54,10 +54,10 @@ save_path:
   pretrain_dir: '../pretrained_models'
 
 condense:
-  ipc: 50
+  ipc: 500
   num_premodel: 20
   niter: 20000
-  iter_calib: 0 
+  iter_calib: 1 
   calib_weight: 1
   sampling_net: False
   calib_weight: 1

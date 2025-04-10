@@ -290,23 +290,23 @@ def get_plotter(args):
     return plotter
 
 
-def get_optimizer(args, parameters, logger=None):
-    if args.optimizer.lower() == "sgd":
-        optim_img = torch.optim.SGD(parameters, lr=args.lr_img, momentum=args.mom_img)
+def get_optimizer(optimizer: str= "sgd", parameters=None,lr=0.01, mom_img=0.5,weight_decay=5e-4,logger=None):
+    if optimizer.lower() == "sgd":
+        optim_img = torch.optim.SGD(parameters, lr=lr, momentum=mom_img)
         if logger and dist.get_rank() == 0:
-            logger(f"Using SGD optimizer with learning rate: {args.lr_img}")
-    elif args.optimizer.lower() == "adam":
-        optim_img = torch.optim.Adam(parameters, lr=args.lr_img)
+            logger(f"Using SGD optimizer with learning rate: {lr}")
+    elif optimizer.lower() == "adam":
+        optim_img = torch.optim.Adam(parameters, lr=lr)
         if logger and dist.get_rank() == 0:
-            logger(f"Using Adam optimizer with learning rate: {args.lr_img}")
-    elif args.optimizer.lower() == "adamw":
+            logger(f"Using Adam optimizer with learning rate: {lr}")
+    elif optimizer.lower() == "adamw":
         optim_img = torch.optim.AdamW(
-            parameters, lr=args.lr_img, weight_decay=args.weight_decay
+            parameters, lr=lr, weight_decay=weight_decay
         )
         if logger and dist.get_rank() == 0:
-            logger(f"Using AdamW optimizer with learning rate: {args.lr_img}")
+            logger(f"Using AdamW optimizer with learning rate: {lr}")
     else:
-        raise ValueError(f"Unsupported optimizer: {args.optimizer.lower()}")
+        raise ValueError(f"Unsupported optimizer: {optimizer.lower()}")
     return optim_img
 
 

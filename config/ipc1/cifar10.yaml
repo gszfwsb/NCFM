@@ -45,7 +45,7 @@ augmentation:
 optimization:
   optimizer: adamw
   lr_scale_adam: 0.1
-  lr_img: 0.01  
+  lr_img: 0.01 
   mom_img: 0.5
   lr_sampling_net: 1e-3
 
@@ -54,13 +54,12 @@ save_path:
   pretrain_dir: '../pretrained_models'
 
 condense:
-  ipc: 50
+  ipc: 1
   num_premodel: 20
   niter: 20000
-  iter_calib: 0 
+  iter_calib: 1 
   calib_weight: 1
   sampling_net: False
-  calib_weight: 1
   num_freqs: 4096
   dis_metrics: "NCFM"
   factor: 2

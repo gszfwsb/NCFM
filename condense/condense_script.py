@@ -14,17 +14,18 @@ def main_worker(args):
     for local_rank in range(args.local_world_size):
         if  args.local_rank == local_rank:
             condenser.load_condensed_data(loader_real, init_type=args.init,load_path=args.load_path)
-            print(f"============RNAK:{dist.get_rank()}====LOCAL_RANK {local_rank} Loaded Condensed Data==========================")
+            print(f"============RANK:{dist.get_rank()}====LOCAL_RANK {local_rank} Loaded Condensed Data==========================")
         dist.barrier()
 
-
-    optim_img = get_optimizer(args, condenser.parameters(), logger=args.logger)
-
-
+    optim_img = get_optimizer(optimizer=args.optimizer, parameters=condenser.parameters(),lr=args.lr_img, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
+    if args.sampling_net:
+            sampling_net = SampleNet(feature_dim=2048)
+            optim_sampling_net = get_optimizer(optimizer=args.optimizer, parameters=sampling_net,lr=args.lr_img, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
+    else:
+        sampling_net = None
+        optim_sampling_net = None
     model_init,model_interval,model_final = get_feature_extractor(args)
-
-
-    condenser.condense(args,plotter,loader_real,aug,optim_img,model_init,model_interval,model_final)
+    condenser.condense(args,plotter,loader_real,aug,optim_img,model_init,model_interval,model_final,sampling_net,optim_sampling_net)
 
     dist.destroy_process_group()
 
@@ -33,6 +34,7 @@ def main_worker(args):
 if __name__ == '__main__':
     import sys
     import os
+    import torch
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
     from utils.diffaug import diffaug
     import torch.distributed as dist
@@ -42,6 +44,7 @@ if __name__ == '__main__':
     import argparse
     from argsprocessor.args import ArgsProcessor
     from condenser.Condenser import Condenser
+    from NCFM.SampleNet import SampleNet
 
     parser = argparse.ArgumentParser(description='Configuration parser')
     parser.add_argument('--debug',dest='debug',action='store_true',help='When dataset is very large , you should get it')

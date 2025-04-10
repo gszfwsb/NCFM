@@ -2,10 +2,10 @@ distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
   workers: 8
-
+  
 dataset:
-  dataset: cifar10
-  nclass: 10
+  dataset: cifar100
+  nclass: 100
   size: 32
   data_dir: '../dataset'
   load_memory: true
@@ -54,13 +54,12 @@ save_path:
   pretrain_dir: '../pretrained_models'
 
 condense:
-  ipc: 50
+  ipc: 100
   num_premodel: 20
   niter: 20000
   iter_calib: 0 
   calib_weight: 1
   sampling_net: False
-  calib_weight: 1
   num_freqs: 4096
   dis_metrics: "NCFM"
   factor: 2

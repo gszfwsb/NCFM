@@ -194,6 +194,8 @@ class Condenser:
         model_init,
         model_interval,
         model_final,
+        sampling_net=None,
+        optim_sampling_net=None,
     ):
         loader_real = AsyncLoader(
             loader_real, args.class_list, args.batch_real, args.device
@@ -202,12 +204,12 @@ class Condenser:
         args.cf_loss_func = CFLossFunc(
             alpha_for_loss=args.alpha_for_loss, beta_for_loss=args.beta_for_loss
         )
-        # if args.sampling_net:
-        #     sampling_net = SampleNet(feature_dim=2048)
-        #     optim_sampling_net =
-        # scheduler = optim.lr_scheduler.MultiStepLR(
-        #     optim_img, milestones=[1 * args.niter // 4,2 * args.niter // 4,  3* args.niter // 4], gamma=0.8
-        # )
+        if args.sampling_net:
+            scheduler_sampling_net = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optim_img, mode="min", factor=0.5, patience=500, verbose=False
+        )
+        else:
+            scheduler_sampling_net = None
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optim_img, mode="min", factor=0.5, patience=500, verbose=False
         )
@@ -232,12 +234,13 @@ class Condenser:
                 sample_fn=loader_syn.class_sample,
                 aug_fn=aug,
                 inner_loss_fn=match_loss if args.depth <= 5 else mutil_layer_match_loss,
-                # inner_loss_fn=match_loss,
                 optim_img=optim_img,
                 class_list=self.args.class_list,
                 timing_tracker=self.timing_tracker,
                 model_interval=model_interval,
                 data_grad=self.data.grad,
+                optim_sampling_net=optim_sampling_net,
+                sampling_net =sampling_net
             )
             if args.iter_calib > 0:
                 calib_loss_total, calib_grad_mean = compute_calib_loss(
@@ -304,6 +307,8 @@ class Condenser:
             if (it + 1) in args.it_save:
                 gather_save_visualize(self, args, iteration=it)
             scheduler.step(current_loss)
+            if scheduler_sampling_net is not None:
+                scheduler_sampling_net.step(current_loss)
 
     def evaluate(self, args, syndataloader, val_loader):
         if args.rank == 0:
@@ -359,6 +364,23 @@ class Condenser:
         all_classes = list(range(self.nclass))
         for current_step in range(1, args.step + 1):
             classes_seen = random.sample(all_classes, current_step * step_classes)
+            def get_loader_step(classes_seen, val_loader):
+                val_data, val_targets = [], []
+
+                for data, target in val_loader:
+                    mask = torch.tensor(
+                        [t.item() in classes_seen for t in target], device=target.device
+                    )
+                    val_data.append(data[mask])
+                    val_targets.append(target[mask])
+
+                val_data = torch.cat(val_data)
+                val_targets = torch.cat(val_targets)
+
+                val_dataset_step = TensorDataset(val_data, val_targets)
+                val_loader_step = DataLoader(val_dataset_step, batch_size=128, shuffle=False)
+                return val_loader_step
+
             val_loader_step = get_loader_step(classes_seen, val_loader)
             syndataloader = get_loader_step(classes_seen, syndataloader)
             for i in range(args.val_repeat):
@@ -397,20 +419,3 @@ class Condenser:
             )
             args.logger("=" * 50)
 
-
-def get_loader_step(classes_seen, val_loader):
-    val_data, val_targets = [], []
-
-    for data, target in val_loader:
-        mask = torch.tensor(
-            [t.item() in classes_seen for t in target], device=target.device
-        )
-        val_data.append(data[mask])
-        val_targets.append(target[mask])
-
-    val_data = torch.cat(val_data)
-    val_targets = torch.cat(val_targets)
-
-    val_dataset_step = TensorDataset(val_data, val_targets)
-    val_loader_step = DataLoader(val_dataset_step, batch_size=128, shuffle=False)
-    return val_loader_step

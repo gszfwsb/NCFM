@@ -2,7 +2,7 @@ distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
   workers: 8
-
+  
 dataset:
   dataset: cifar100
   nclass: 100
@@ -31,6 +31,7 @@ train:
   weight_decay: 5e-4
   seed: 0
   model_num: 20
+  autoaug: False
 
 augmentation:
   mixup: cut
@@ -44,7 +45,7 @@ augmentation:
 optimization:
   optimizer: adamw
   lr_scale_adam: 0.1
-  lr_img: 0.01
+  lr_img: 0.01  
   mom_img: 0.5
   lr_sampling_net: 1e-3
 
@@ -55,8 +56,8 @@ save_path:
 condense:
   ipc: 50
   num_premodel: 20
-  niter: 10000
-  iter_calib: 1 
+  niter: 20000
+  iter_calib: 0 
   calib_weight: 1
   sampling_net: False
   num_freqs: 4096
@@ -65,3 +66,4 @@ condense:
   alpha_for_loss: 0.5
   beta_for_loss: 0.5
   decode_type: 'single' # choices=['single', 'multi', 'bound']
+  teacher_model_epoch: 20

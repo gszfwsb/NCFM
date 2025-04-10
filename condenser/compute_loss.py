@@ -12,6 +12,8 @@ def compute_match_loss(
     timing_tracker,
     model_interval,
     data_grad,
+    optim_sampling_net = None,
+    sampling_net =None
 ):
 
     loss_total = 0
@@ -20,23 +22,35 @@ def compute_match_loss(
     for c in class_list:
         timing_tracker.start_step()
 
+        # 1. 数据加载
         img, _ = loader_real.class_sample(c)
         timing_tracker.record("data")
         img_syn, _ = sample_fn(c)
 
+        # 2. 数据增强
         img_aug = aug_fn(torch.cat([img, img_syn]))
         timing_tracker.record("aug")
         n = img.shape[0]
-
-        loss = inner_loss_fn(img_aug[:n], img_aug[n:], model_interval, args)
+        # 3. 计算损失
+        loss = inner_loss_fn(img_aug[:n], img_aug[n:], model_interval,sampling_net,args)
         loss_total += loss.item()
         timing_tracker.record("loss")
 
+        # 4. 反向传播和优化
         optim_img.zero_grad()
-        loss.backward()
+        if optim_sampling_net is not None:
+            optim_sampling_net.zero_grad()
+            loss.backward(retain_graph=True)
+            optim_img.step()
+            optim_img.zero_grad()
+            (-loss).backward()
+            optim_sampling_net.step()
+            optim_sampling_net.zero_grad()
+        else:
+            loss.backward()
+            optim_img.step()
         if data_grad is not None:
             match_grad_mean += torch.norm(data_grad).item()
-        optim_img.step()
         timing_tracker.record("backward")
 
     return loss_total, match_grad_mean

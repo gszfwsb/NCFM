@@ -2,27 +2,27 @@ distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
   workers: 8
-
+  
 dataset:
-  dataset: cifar10
+  dataset: imagefruit
   nclass: 10
-  size: 32
-  data_dir: '../dataset'
+  size: 128
+  data_dir: '/root/autodl-tmp/imagenet/'
   load_memory: true
-  batch_real: 1024
+  batch_real: 128
   nch: 3
 
 network:
   net_type: convnet
   norm_type: instance
-  depth: 3
+  depth: 5
   width: 1.0
 
 train:
   evaluation_epochs: 2000
   epoch_print_freq: 10
   epoch_eval_interval: 100
-  pertrain_epochs: 60
+  pertrain_epochs: 80
   batch_size: 128
   lr: 0.01
   adamw_lr: 0.001    
@@ -31,13 +31,13 @@ train:
   weight_decay: 5e-4
   seed: 0
   model_num: 20
-  autoaug: False
+  autoaug: True
 
 augmentation:
   mixup: cut
   beta: 1.0
   mix_p: 0.5
-  rrc: True
+  rrc: true
   dsa: true
   dsa_strategy: "color_crop_cutout_flip_scale_rotate"
   aug_type: 'color_crop_cutout'
@@ -45,7 +45,7 @@ augmentation:
 optimization:
   optimizer: adamw
   lr_scale_adam: 0.1
-  lr_img: 0.01  
+  lr_img: 0.01 
   mom_img: 0.5
   lr_sampling_net: 1e-3
 
@@ -60,7 +60,6 @@ condense:
   iter_calib: 0 
   calib_weight: 1
   sampling_net: False
-  calib_weight: 1
   num_freqs: 4096
   dis_metrics: "NCFM"
   factor: 2
