@@ -22,21 +22,18 @@ def compute_match_loss(
     for c in class_list:
         timing_tracker.start_step()
 
-        # 1. 数据加载
         img, _ = loader_real.class_sample(c)
         timing_tracker.record("data")
         img_syn, _ = sample_fn(c)
 
-        # 2. 数据增强
         img_aug = aug_fn(torch.cat([img, img_syn]))
         timing_tracker.record("aug")
         n = img.shape[0]
-        # 3. 计算损失
+
         loss = inner_loss_fn(img_aug[:n], img_aug[n:], model_interval,sampling_net,args)
         loss_total += loss.item()
         timing_tracker.record("loss")
 
-        # 4. 反向传播和优化
         optim_img.zero_grad()
         if optim_sampling_net is not None:
             optim_sampling_net.zero_grad()
