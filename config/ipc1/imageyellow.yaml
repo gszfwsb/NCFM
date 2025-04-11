@@ -29,7 +29,7 @@ train:
   weight_decay: 5e-4
   seed: 0
   model_num: 20
-  autoaug: False
+
 
 augmentation:
   mixup: cut
