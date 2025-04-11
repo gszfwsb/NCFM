@@ -21,13 +21,12 @@ Here's an overview of the process behind our **Neural Characteristic Function Ma
 
 ## :mag: TODO
 <font color="red">**We are currently organizing all the code. Stay tuned!**</font>
-- [ ] Distillation code
+- [x] Distillation code
 - [x] Evaluation code
-- [ ] Sampling network
-- [ ] Config files
+- [x] Sampling network
+- [x] Config files
 - [ ] Pretrained models
 - [ ] Distilled datasets
-- [ ] Continual learning code
 - [ ] Project page
 
 
