@@ -9,7 +9,7 @@ dataset:
   size: 128
   data_dir: '/root/autodl-tmp/imagenet/'
   load_memory: true
-  batch_real: 128
+  batch_real: 1024
   nch: 3
 
 network:

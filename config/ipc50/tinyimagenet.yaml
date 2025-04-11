@@ -8,7 +8,7 @@ dataset:
   size: 64
   data_dir: '../dataset'
   load_memory: true
-  batch_real: 128
+  batch_real: 1024
   nch: 3
 
 network:
