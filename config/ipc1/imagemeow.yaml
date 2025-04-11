@@ -56,7 +56,7 @@ condense:
   ipc: 1
   num_premodel: 20
   niter: 20000
-  iter_calib: 0 
+  iter_calib: 1 
   calib_weight: 1
   sampling_net: False
   num_freqs: 4096
