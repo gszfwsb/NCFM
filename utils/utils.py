@@ -14,13 +14,11 @@ from data.dataloader import (
     ImageNetMemoryDataLoader,
 )
 from torch.utils.data import DataLoader, DistributedSampler
-
 import models.resnet as RN
 import models.resnet_ap as RNAP
 import models.convnet as CN
 import models.densenet_cifar as DN
 from efficientnet_pytorch import EfficientNet
-
 from torchvision import datasets, transforms
 from data.transform import transform_imagenet
 from data.dataset import ImageFolder, ImageFolder_mtt
