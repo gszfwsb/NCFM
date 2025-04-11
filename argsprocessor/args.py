@@ -2,6 +2,7 @@ import argparse
 from typing import Dict, Any, Optional
 import yaml
 
+
 class ArgsProcessor:
     def __init__(self, config_path: str) -> None:
         """

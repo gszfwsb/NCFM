@@ -1,4 +1,3 @@
-
 def main_worker(args):
     
     args.class_list = distribute_class(args.nclass,args.debug)
@@ -30,7 +29,7 @@ def main_worker(args):
     dist.destroy_process_group()
 
 
-    
+
 if __name__ == '__main__':
     import sys
     import os
@@ -67,5 +66,3 @@ if __name__ == '__main__':
     init_script(args)
 
     main_worker(args)
-
-
