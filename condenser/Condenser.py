@@ -22,7 +22,6 @@ from data.dataloader import AsyncLoader
 from tqdm import tqdm
 import random
 
-
 class Condenser:
     def __init__(self, args, nclass_list, nchannel, hs, ws, device="cuda"):
         self.timing_tracker = TimingTracker(args.logger)
@@ -418,4 +417,3 @@ class Condenser:
                 f"All result: {[f'Step {i} Acc: {x:.3f}' for i, x in enumerate(mean_result_list)]}"
             )
             args.logger("=" * 50)
-
