@@ -93,14 +93,11 @@ If you have any questions, please contact [Shaobo Wang](https://gszfwsb.github.i
 If you find NCFM useful for your research and applications, please cite using this BibTeX:
 
 ```bibtex
-@misc{wang2025datasetdistillationneuralcharacteristic,
+@inproceedings{wang2025NCFM,
       title={Dataset Distillation with Neural Characteristic Function: A Minmax Perspective}, 
       author={Shaobo Wang and Yicun Yang and Zhiyuan Liu and Chenghao Sun and Xuming Hu and Conghui He and Linfeng Zhang},
-      year={2025},
-      eprint={2502.20653},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2502.20653}, 
+ booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+  year={2025}
 }
 ```
 
