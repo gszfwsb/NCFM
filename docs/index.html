@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Dataset Distillation with Neural Characteristic Function: A Minmax Perspective"> 
+  <meta name="keywords" content="Dataset Distillation,Characteristic Function,Minmax Game, Shanghai Jiao Tong University"> <!-- TODO: add some keywords for search engine -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dataset Distillation with Neural Characteristic Function: A Minmax Perspective</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome_6_7_2.all.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome_6_7_2.all.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            Dataset Distillation with Neural Characteristic Function: A Minmax Perspective
+          </h1>
+
+          <div class="publication-authors">
+              <!-- 作者列表 -->
+            <div class="is-size-4 author-list">
+              <span class="author-block">
+                <a href="https://gszfwsb.github.io/" class="author-name">Shaobo Wang</a><sup class="affiliation">1,2</sup>
+              </span>
+              <span class="author-block">
+                <a href="" class="author-name">Yicun Yang</a><sup class="affiliation">2</sup>
+              </span>
+              <span class="author-block">
+                <a href="" class="author-name">Zhiyuan Liu</a><sup class="affiliation">2</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://jize-w.github.io/" class="author-name">Jize Wang</a><sup class="affiliation">1</sup>
+              </span>
+              <span class="author-block">
+                <a href="" class="author-name">Jiajun Zhang</a><sup class="affiliation">2</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://likaixin2000.github.io/" class="author-name">Chenghao Sun</a><sup class="affiliation">2</sup>
+              </span>
+              <span class="author-block">
+                <a href="" class="author-name">Xuming Hu</a><sup class="affiliation">3</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://www.microsoft.com/en-us/research/people/lzhong/" class="author-name">Conghui He</a><sup class="affiliation">4</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://conghui.github.io/" class="author-name">Linfeng Zhang</a><sup class="affiliation">1,2*</sup>
+              </span>
+            </div>
+          
+            <!-- 机构信息 -->
+            <div class="institutions is-size-5">
+              <span class="institution"><sup>1</sup>School of Artificial Intelligence, Shanghai Jiao Tong University</span><br>
+              <span class="institution"><sup>2</sup>EPIC Lab, Shanghai Jiao Tong University</span><br>
+              <span class="institution"><sup>3</sup>Hong Kong University of Science and Technology, Guangzhou</span><br>
+              <span class="institution"><sup>4</sup>Shanghai Artificial Intelligence Laboratory</span>
+            </div>
+          
+            <!-- 贡献说明 -->
+            <div class="contribution-notes is-size-5">
+              <span class="note"><sup>*</sup> Corresponding Author</span>
+            </div>
+            <div class="corresponding-authors is-size-5">
+              {shaobowang1009, zhanglinfeng}@sjtu.edu.cn
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2502.20653"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <!-- <i class="fas fa-file-pdf"></i> -->
+                      <i class="fa-solid fa-file-pdf" style="color: #ec4646;"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Arxiv Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2502.20653"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/gszfwsb/NCFM"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>GitHub</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fa-regular fa-database"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              </span> -->
+              <!-- Model Link. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/BytedTsinghua-SIA/DAPO-Qwen-32B"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"> -->
+                    <!-- <i class="fa-solid fa-face-smiling-hands"></i> -->
+                    <!-- <i class="fa-solid fa-face-smiling-hands" style="color: #FFD43B;"></i>
+                  </span>
+                  <span>Model</span>
+                  </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Video -->
+    <div class="columns is-centered">
+      <div class="column">
+        <p>
+            <strong>TL;DR:</strong> We propose Neural Characteristic Function Matching (NCFM), a novel dataset distillation method that reformulates the problem as minmax optimization and introduces Neural Characteristic Function Discrepancy (NCFD) to achieve lossless compression with 20.5% accuracy boost, 300× memory reduction, and 20× speedup.
+        </p>
+        </div>
+        </div>
+    </br>
+        <h2 class="subtitle has-text-centered">
+          <img src="./images/pipeline.png" style="display: block; margin: 0 auto; width: 150%;"/>
+        </h2>
+
+   </div>
+  </div>
+<!-- </section>    
+
+<section class="section"> -->
+
+  <div class="container is-max-desktop">
+    <!-- Abstract -->
+    <div class="columns is-centered has-text-centered">
+      <!-- <div class="column is-four-fifths"> -->
+          <div class="content has-text-justified">
+            <p>  
+            </p>  
+          </div>
+      <!-- </div> -->
+    </div>
+   
+        <!-- <section class="section"> -->
+          <div class="columns is-centered has-text-centered">
+            <h2 class="title is-3"><br>Contributions</h2>
+          </div>
+          <div class="container is-max-desktop">
+          <!-- Q&A Section -->
+          <div class="columns is-centered">
+            <!-- <div class="qa-answer">
+              <div class="a-marker">
+                <span class="a-icon">1</span>
+              </div>
+              <div class="answer-text" style="font-size: 1em;">
+                <p>
+                  In CoTs, the majority of tokens are generated with low entropy, while only a small subset exhibits high entropy. These high-entropy minority tokens often act as "forks" in the reasoning process, guiding the model toward diverse reasoning paths. Maintaining high entropy at these critical forking tokens is beneficial for reasoning performance.
+                </p>
+              </div>
+            </div> -->
+
+            <div class="qa-answer" style="flex-direction: column; gap: 1rem;">
+              <div class="qa-row" style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                <div class="a-marker" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fas fa-ruler-combined fa-2x fa-fw" style="color: #1f6110;"></i>
+                </div>
+                <div class="answer-text" style="font-size: 1em;">
+                  <p>
+                    <b>Maxmin Problem Transformation.</b> NCFM employs a sampling network to significantly enhance the Characteristic Function's ability to capture both the original dataset and its distribution. This approach maintains the sensitivity of the Characteristic Function throughout the iterative process, thereby accelerating dataset convergence.
+                </div>
+              </div>
+
+              <div class="qa-row" style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                <div class="a-marker" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-dna fa-2x fa-fw" style="color: #1f6110;"></i>
+                </div>
+                <div class="answer-text" style="font-size: 1em;">
+                  <p>
+                    <b>Computational Efficiency.</b> NCFM achieves comparable performance while requiring only 1/300 of the GPU memory and 1/100 of the training time compared to traditional methods. Unlike kernel-based approache (MMD), this remarkable efficiency is attained without incurring the computational overhead typically associated with characteristic function loss calculations.
+                </div>
+              </div>
+
+              <div class="qa-row" style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                <div class="a-marker" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-link fa-2x fa-fw" style="color: #1f6110;"></i>
+                </div>
+                <div class="answer-text" style="font-size: 1em;">
+                  <p>
+                    <b>Lossless dataset distillation for DM. </b> We pioneer the achievement of lossless dataset distillation through distribution matching, demonstrating that DM remains a cutting-edge approach in the field. </p>
+                </div>
+              </div>
+
+              <div class="qa-row" style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                <div class="a-marker" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-chart-bar fa-2x fa-fw" style="color: #1f6110;"></i>
+                </div>
+                <div class="answer-text" style="font-size: 1em;">
+                  <p>
+                    <b>Experimental Results.</b> Notably, our method achieves a 20.5% accuracy improvement on ImageSquawk, reduces GPU memory usage by more than 300×, and is 20× faster than state-of-the-art approaches. To our knowledge, this is the first work to achieve lossless compression of CIFAR-100 on a single NVIDIA 2080 Ti GPU, requiring only 2.3 GB of memory.         </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="qa-answer">
+              <div class="a-marker">
+                <span class="a-icon">3</span>
+              </div>
+              <div class="answer-text" style="font-size: 1em;">
+                <p>
+                  High-entropy minority tokens drive nearly all reasoning performance gains during RLVR, whereas low-entropy majority tokens contribute little or may even hinder performance. One possible explanation is that, prior to performance convergence, a subset ($\sim20\%$ in our experiments) of high-entropy tokens facilitates exploration, while low-entropy tokens offer minimal benefit or may even impede it.
+                </p>
+              </div>
+            </div>
+
+            <div class="qa-answer">
+              <div class="a-marker">
+                <span class="a-icon">4</span>
+              </div>
+              <div class="answer-text" style="font-size: 1em;">
+                <p>
+                  Based on the insights above, we further discuss (i) high-entropy minority tokens as a potential reason why supervised fine-tuning (SFT) memorizes but RL generalizes, (ii) how prior knowledge and readability requirements shape the different entropy patterns seen in LLM CoTs compared to traditional RL trajectories, and (iii) the advantage of clip-higher over entropy bonus for RLVR.
+                </p>
+              </div>
+            </div> -->
+
+          </div>
+    </div>
+  </div>
+<!-- </section> -->
+
+
+<!-- <section class="section"> -->
+<div class="container is-max-desktop">
+  <!-- Conclusion -->
+  <div class="columns is-centered has-text-centered">
+    <div class="column">
+      <h2 class="title is-3"><br>Neural Characteristic Function</h2>
+      <div class="content has-text-justified">
+        <p>
+          We propose a novel Neural Characteristic Function Matching (NCFM) approach for distribution matching, formulated as a minmax optimization problem to minimize the discrepancy between synthetic dataset \(\tilde{D}\) and real dataset \(D\) while learning a robust discrepancy metric via network \(\psi\). The Neural Characteristic Function Discrepancy (NCFD) is defined as \(\min_{\tilde{D}} \max_{\psi} \mathbb{E}_{x \sim D, \tilde{x} \sim \tilde{D}} \int_{t} \sqrt{\text{Chf}(t; f) \, dF_{\mathcal{T}}(t; \psi)}\), where \(\text{Chf}(t; f) = \alpha \left( \left| \Phi_{f(x)}(t) - \Phi_{f(\tilde{x})}(t) \right|^2 \right) + (1 - \alpha) \cdot \left( 2 \left| \Phi_{f(x)}(t) \right| \left| \Phi_{f(\tilde{x})}(t) \right| \left( 1 - \cos\left( a_{f(x)}(t) - a_{f(\tilde{x})}(t) \right) \right) \right)\), balancing amplitude and phase information to effectively align distributions.
+        </p>
+        <p style="text-align: center;">
+          <img src="./images/minmax_1.png" style="display: block; margin: 0 auto; width: 85%;"/>
+        </p>
+          <img src="./images/minmax.png" style="display: block; margin: 0 auto; width: 85%;"/>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- </section> -->
+
+
+<!-- <section class="section"> -->
+  <div class="container is-max-desktop">
+    <!-- Conclusion -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <h2 class="title is-3"><br>Experimental Results</h2>
+
+        <div class="content has-text-justified">
+          <ol>
+            <li>
+Compared to SOTA methods, Data Whisperer demonstrates consistent superiority across varying dataset sizes. On real datasets, as illustrated in Table 2, Data Whisperer achieves higher accuracy. For instance, on 10% data of DialogSum with Qwen-2.5-7B-Instruct, Data Whisperer attains an accuracy of 43.00, surpassing the previous SOTA method, STAFF, by a significant margin of 2.46.            </li> 
+                  <img src="./images/real.png" style="display: block; margin: 0 auto; width: 85%;"/>
+
+
+          <li>
+Similarly, on synthetic datasets, as shown in Table 3, Data Whisperer consistently delivers the best performance across all evaluated models and data proportions, underscoring its robust generalization capabilities. Notably, with the Qwen-2.5-7B-Instruct model on 5% of the data, Data Whisperer achieves an accuracy of 31.27, outperforming the prior SOTA method, Nuggets, by a remarkable 2.87 points.           
+                  <img src="./images/synthetic.png" style="display: block; margin: 0 auto; width: 85%;"/>
+
+          </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- </section> -->
+
+
+
+
+<!-- <section class="section"> -->
+  <div class="container is-max-desktop">
+    <!-- Conclusion -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <h2 class="title is-3"><br>Resource Efficiency with Lossless Performance</h2>
+
+        <div class="content has-text-justified">
+          <ol>
+            NCFM vs SOTA on CIFAR-100 (8×H100): 300× memory reduction, 20× speedup, better accuracy. Achieved lossless distillation with 2.3GB GPU memory.
+                  <img src="./images/weak2s.png" style="display: block; margin: 0 auto; width: 100%;"/>
+            <!-- <p style="font-size: 0.8rem;">
+Ablation on the weak-to-strong scalability.
+For Qwen models, we used Qwen-2.5-3B-Instruct to
+perform Data Whisperer for Qwen-2.5-7B-Instruct. For
+Mistral models, we used Mistral-7B-Instruct-v0.2 to perform Data Whisperer for Mistral-Nemo-Instruct-2407.
+Weaker models were not fine-tuned on the task dataset.
+We found that using a weaker model does not significantly affect performance and provides a more efficient
+solution (measured by STR). Best viewed in color.
+            </p> -->
+
+          </ol>
+        </div>
+        <div class="content has-text-justified">
+          <ol>
+            Performance metrics (speed and memory) on A100 80G. OOM: out-of-memory. 'Reduction': NCFM's gains vs best baseline.
+                  <img src="./images/weak3s.png" style="display: block; margin: 0 auto; width: 100%;"/>
+            <p style="font-size: 1.2rem;">
+              NCFM demonstrates superior training and memory efficiency across benchmark datasets while maintaining better performance. On CIFAR-100 (IPC 50), NCFM achieves 30× speedup over TESLA without sampling network and 20× with it. Notably, while baseline methods face OOM issues at IPC 50, NCFM requires only 1.9GB GPU memory, showcasing exceptional scalability under high IPC conditions. Additional CIFAR-10 results are in supplementary materials.
+            </p>
+
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- </section> -->
+
+  <div class="container is-max-desktop">
+    <!-- Conclusion -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <h2 class="title is-3"><br>Discussions</h2>
+
+        <div class="content has-text-justified">
+          <ol>
+            
+            <li>
+              <b>NCFD's training stability is vital for our minmax approach. While traditional methods use real-valued metrics, NCFM leverages complex plane optimization. Despite common instability in adversarial minmax (e.g., GANs), NCFM shows consistent stabilit backed byLe ́vy’s Convergence Theorem weak convergence guarantees, ensuring robust CF-based discrepancy across diverse conditions.</b>
+            </li>
+
+            <li>
+              <b>Relationship between CFD and MMD: NCFM's Characteristic Function Discrepancy (CFD) can be viewed as a well-behaved characteristic kernel in MMD. While MMD uses fixed kernels, NCFM adaptively learns kernel parameters for optimal distribution alignment. CFD's structure encompasses MMD as a special case when matching specific moments, explaining NCFM's efficiency. Computationally, CFD operates in linear time vs MMD's quadratic complexity, making it more scalable for large datasets.</b>
+            </li>
+
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<style>
+  .qa-card {
+    background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin: 2.5rem 0;
+    padding: 2.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .qa-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(255,0,0,0.15); /* 红色 */
+  }
+  
+  .qa-card:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(180deg, #FF0000 0%, #308030 100%); /* 红到绿 */
+  }
+  
+  .q-marker {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .q-number {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #FF0000; /* 红色 */
+    min-width: 50px;
+    position: relative;
+  }
+  
+  .q-number:after {
+    content: "";
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #308030;
+    border-radius: 50%;
+  }
+  
+  .q-icon, .a-icon {
+    font-size: 1.8rem;
+    font-weight: 800;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .q-icon {
+    background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%); /* 红色渐变 */
+    color: white;
+  }
+  
+.a-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f6110;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+  margin-right: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+<!-- .a-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2d6a4f;
+  color: white;
+  border-radius: 50%;
+
+} -->
+  .qa-question {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .question-text {
+    font-size: 1.3rem;
+    color: #840b0b;
+    margin: 0;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 2rem;
+  }
+  
+  .question-text:before {
+    content: "?";
+    position: absolute;
+    left: 0;
+    top: -0.2em;
+    font-size: 1.8em;
+    color: #FF0000; /* 红色 */
+    opacity: 0.2;
+    font-weight: 800;
+  }
+  
+  .qa-answer {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(76,175,80,0.05);
+    border-radius: 12px;
+    position: relative;
+    margin-left: 0rem;
+  }
+  
+  .answer-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #37474f;
+    position: relative;
+    padding-left: 2rem;
+  }
+  
+  .answer-text:before {
+    content: "➤";
+    position: absolute;
+    left: 0;
+    color: #308030;
+    font-size: 1.2em;
+    top: 0.1em;
+  }
+
+  @media (max-width: 480px) {
+    .qa-card {
+      padding: 1.2rem;
+      margin: 1.5rem 0;
+      border-radius: 12px;
+    }
+
+    .q-marker {
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .q-number {
+      font-size: 1.5rem !important;
+      min-width: 40px;
+    }
+
+    .q-icon, .a-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 1.4rem;
+      border-radius: 8px;
+    }
+
+    .question-text {
+      font-size: 1.15rem;
+      line-height: 1.4;
+      padding-left: 1.5rem;
+    }
+
+    .qa-answer {
+      margin: 1.2rem 0 0 0;
+      padding: 1rem;
+      border-radius: 10px;
+      gap: 1rem;
+    }
+
+    .answer-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      padding-left: 1.5rem;
+    }
+
+    .answer-text:before {
+      left: -0.2rem;
+    }
+
+    .qa-card:before {
+      width: 3px;
+    }
+
+    p {
+      margin-bottom: 0.8em !important;
+    }
+
+    .title.is-3 {
+      font-size: 1.5rem !important;
+      margin-bottom: 2rem !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .qa-card {
+      padding: 1.5rem;
+    }
+    @media (max-width: 480px) {
+      .qa-card {
+        padding: 1.2rem;
+      }
+    }
+  }
+  
+  /* @media (max-width: 768px) {
+    .qa-card {
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .qa-answer {
+      margin-left: 0;
+    }
+    .question-text {
+      padding-left: 0;
+    }
+    .question-text:before {
+      display: none;
+    }
+  } */
+</style>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Fully Open-Source -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">BibTeX</h2>
+        <div class="content has-text-justified">
+          <pre><code>
+            @inproceedings{wang2025NCFM,
+              title={Dataset Distillation with Neural Characteristic Function: A Minmax Perspective}, 
+              author={Shaobo Wang and Yicun Yang and Zhiyuan Liu and Chenghao Sun and Xuming Hu and Conghui He and Linfeng Zhang},
+            booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
+              year={2025}
+            }
+</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+</body>
+</html>
