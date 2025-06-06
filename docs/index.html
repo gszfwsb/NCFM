@@ -301,9 +301,22 @@
       <h2 class="title is-3"><br>Neural Characteristic Function</h2>
       <div class="content has-text-justified">
         <p>
-          We propose a novel Neural Characteristic Function Matching (NCFM) approach for distribution matching, formulated as a minmax optimization problem to minimize the discrepancy between synthetic dataset \(\tilde{D}\) and real dataset \(D\) while learning a robust discrepancy metric via network \(\psi\). The Neural Characteristic Function Discrepancy (NCFD) is defined as \(\min_{\tilde{D}} \max_{\psi} \mathbb{E}_{x \sim D, \tilde{x} \sim \tilde{D}} \int_{t} \sqrt{\text{Chf}(t; f) \, dF_{\mathcal{T}}(t; \psi)}\), where \(\text{Chf}(t; f) = \alpha \left( \left| \Phi_{f(x)}(t) - \Phi_{f(\tilde{x})}(t) \right|^2 \right) + (1 - \alpha) \cdot \left( 2 \left| \Phi_{f(x)}(t) \right| \left| \Phi_{f(\tilde{x})}(t) \right| \left( 1 - \cos\left( a_{f(x)}(t) - a_{f(\tilde{x})}(t) \right) \right) \right)\), balancing amplitude and phase information to effectively align distributions.
+          We propose a novel Neural Characteristic Function Matching (NCFM) approach for distribution matching, 
+          formulated as a minmax optimization problem to minimize the discrepancy between synthetic dataset \(\tilde{D}\) 
+          and real dataset \(D\) while learning a robust discrepancy metric via network \(\psi\). 
         </p>
-        <p style="text-align: center;">
+        <p>
+          The Neural Characteristic Function Discrepancy (NCFD) is defined as:
+          \[\min_{\tilde{D}} \max_{\psi} \mathbb{E}_{x \sim D, \tilde{x} \sim \tilde{D}} \int_{t} \sqrt{\text{Chf}(t; f) \, dF_{\mathcal{T}}(t; \psi)}\]
+        </p>
+        <p>
+          where:
+          \[\text{Chf}(t; f) = \alpha \left( \left| \Phi_{f(x)}(t) - \Phi_{f(\tilde{x})}(t) \right|^2 \right) + (1 - \alpha) \cdot \left( 2 \left| \Phi_{f(x)}(t) \right| \left| \Phi_{f(\tilde{x})}(t) \right| \left( 1 - \cos\left( a_{f(x)}(t) - a_{f(\tilde{x})}(t) \right) \right) \right)\]
+        </p>
+        <p>
+          balancing amplitude and phase information to effectively align distributions.
+        </p>
+        <p style="text-align: center;font-size: 1.2rem;">
           <img src="./images/minmax_1.png" style="display: block; margin: 0 auto; width: 85%;"/>
         </p>
           <img src="./images/minmax.png" style="display: block; margin: 0 auto; width: 85%;"/>
