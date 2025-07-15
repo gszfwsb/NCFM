@@ -25,9 +25,9 @@ Here's an overview of the process behind our **Neural Characteristic Function Ma
 - [x] Evaluation code
 - [x] Sampling network
 - [x] Config files
-- [ ] Pretrained models
-- [ ] Distilled datasets
-- [ ] Project page
+- [x] Pretrained models
+- [x] Distilled datasets
+- [x] Project page
 
 
 
@@ -47,7 +47,7 @@ git clone https://github.com/gszfwsb/NCFM.git
 ```sh
 pip install -r requirements.txt
 ```
-3. Pretrain the models yourself, or download the **pretrained_models** from [Google Drive](https://drive.google.com/drive/folders/1HT_eUbTWOVXvBov5bM90b169jdy2puOh?usp=drive_link). 
+3. Pretrain the models yourself, or download the **pretrained_models** from [huggingface](https://huggingface.co/maomaocun/NCFM). 
 ```sh
 cd pretrain
 torchrun --nproc_per_node={n_gpus} --nnodes=1 pretrain_script.py --gpu={gpu_ids} --config_path=../config/{ipc}/{dataset}.yaml
@@ -60,7 +60,7 @@ cd condense
 torchrun --nproc_per_node={n_gpus} --nnodes=1 condense_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{ipc}/{dataset}.yaml
 
 ```
-5. Evaluation
+5. Evaluation or or download the **condensed dataset** from [huggingface](https://huggingface.co/maomaocun/NCFM)
 ```sh
 cd evaluation 
 torchrun --nproc_per_node={n_gpus} --nnodes=1 evaluation_script.py --gpu={gpu_ids} --ipc={ipc} --config_path=../config/{ipc}/{dataset}.yaml --load_path={distilled_dataset.pt}
