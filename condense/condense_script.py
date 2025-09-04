@@ -18,8 +18,8 @@ def main_worker(args):
 
     optim_img = get_optimizer(optimizer=args.optimizer, parameters=condenser.parameters(),lr=args.lr_img, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
     if args.sampling_net:
-            sampling_net = SampleNet(feature_dim=2048)
-            optim_sampling_net = get_optimizer(optimizer=args.optimizer, parameters=sampling_net,lr=args.lr_img, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
+        sampling_net = SampleNet(feature_dim=2048).to(args.device)
+        optim_sampling_net = get_optimizer(optimizer= "sgd", parameters=sampling_net.parameters(),lr=args.lr_sampling_net, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
     else:
         sampling_net = None
         optim_sampling_net = None
@@ -55,7 +55,6 @@ if __name__ == '__main__':
     parser.add_argument('--gpu', type=str, default = "0",required=True, help='GPUs to use, e.g., "0,1,2,3"') 
     parser.add_argument('-i', '--ipc', type=int, default=1,required=True, help='number of condensed data per class')
     parser.add_argument('--tf32', action='store_true',default=True,help='Enable TF32')
-    parser.add_argument('--sampling_net', action='store_true',default=False,help='Enable sampling_net')
     args = parser.parse_args()
     args_processor = ArgsProcessor(args.config_path)
 
