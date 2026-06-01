@@ -94,6 +94,10 @@ def set_experiment_name_and_save_Dir(
     num_freqs,
 ):
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
+    if dist.is_available() and dist.is_initialized():
+        timestamp_holder = [timestamp if dist.get_rank() == 0 else None]
+        dist.broadcast_object_list(timestamp_holder, src=0)
+        timestamp = timestamp_holder[0]
     # Set the base save directory path according to the run_mode
     if run_mode == "Condense":
         assert ipc > 0, "IPC must be greater than 0"
@@ -125,6 +129,8 @@ def set_experiment_name_and_save_Dir(
     # Create save directory if the rank is 0
     if dist.get_rank() == 0:
         os.makedirs(save_dir, exist_ok=True)
+    if dist.is_available() and dist.is_initialized():
+        dist.barrier()
 
     return exp_name, save_dir, lr_img
 

@@ -13,6 +13,7 @@ import torch.nn.functional as F
 import torch.distributed as dist
 from tqdm import tqdm
 import os
+import sys
 
 
 def SoftCrossEntropy(inputs, target, temperature=1.0, reduction="average"):
@@ -42,26 +43,55 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
         train_criterion_sl = SoftCrossEntropy
     train_criterion = nn.CrossEntropyLoss().cuda()
     val_criterion = nn.CrossEntropyLoss().cuda()
+    weight_decay = getattr(args, "weight_decay", 0.0)
     if args.eval_optimizer.lower() == "adamw":
-        optimizer = torch.optim.AdamW(model.parameters(), lr=args.adamw_lr)
-        if logger and dist.get_rank() == 0:
-            logger(f"Using AdamW optimizer with learning rate: {args.adamw_lr}")
-    elif args.eval_optimizer.lower() == "sgd":
-        optimizer = torch.optim.SGD(
-            model.parameters(), lr=args.lr, momentum=args.momentum
+        optimizer = torch.optim.AdamW(
+            model.parameters(), lr=args.adamw_lr, weight_decay=weight_decay
         )
         if logger and dist.get_rank() == 0:
-            logger(f"Using SGD optimizer with learning rate: {args.lr}")
-    scheduler = optim.lr_scheduler.MultiStepLR(
-        optimizer,
-        milestones=[
-            args.evaluation_epochs // 5,
-            2 * args.evaluation_epochs // 5,
-            3 * args.evaluation_epochs // 5,
-            4 * args.evaluation_epochs // 5,
-        ],
-        gamma=0.5,
-    )
+            logger(
+                f"Using AdamW optimizer with learning rate: {args.adamw_lr}, weight decay: {weight_decay}"
+            )
+    elif args.eval_optimizer.lower() == "adam":
+        optimizer = torch.optim.Adam(
+            model.parameters(), lr=args.adamw_lr, weight_decay=weight_decay
+        )
+        if logger and dist.get_rank() == 0:
+            logger(
+                f"Using Adam optimizer with learning rate: {args.adamw_lr}, weight decay: {weight_decay}"
+            )
+    elif args.eval_optimizer.lower() == "sgd":
+        optimizer = torch.optim.SGD(
+            model.parameters(),
+            lr=args.lr,
+            momentum=args.momentum,
+            weight_decay=weight_decay,
+        )
+        if logger and dist.get_rank() == 0:
+            logger(
+                f"Using SGD optimizer with learning rate: {args.lr}, weight decay: {weight_decay}"
+            )
+    scheduler_value = getattr(args, "eval_scheduler", "multistep")
+    scheduler_type = "none" if scheduler_value is None else str(scheduler_value).lower()
+    if scheduler_type == "multistep":
+        scheduler = optim.lr_scheduler.MultiStepLR(
+            optimizer,
+            milestones=[
+                args.evaluation_epochs // 5,
+                2 * args.evaluation_epochs // 5,
+                3 * args.evaluation_epochs // 5,
+                4 * args.evaluation_epochs // 5,
+            ],
+            gamma=getattr(args, "eval_scheduler_gamma", 0.5),
+        )
+    elif scheduler_type == "cosine":
+        scheduler = optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=args.evaluation_epochs
+        )
+    elif scheduler_type == "none":
+        scheduler = None
+    else:
+        raise ValueError(f"Unsupported eval scheduler: {scheduler_type}")
     # scheduler = optim.lr_scheduler.MultiStepLR(
     #     optimizer, milestones=[args.evaluation_epochs//2], gamma=0.1)
 
@@ -80,7 +110,10 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
         aug = None
         if args.rank == 0:
             logger(f"Start training with base augmentation and {args.mixup} mixup")
-    pbar = tqdm(range(1, args.evaluation_epochs + 1))
+    pbar = tqdm(
+        range(1, args.evaluation_epochs + 1),
+        disable=args.rank != 0 or not sys.stderr.isatty(),
+    )
     for epoch in range(1, args.evaluation_epochs + 1):
         train_loader.sampler.set_epoch(epoch)
         if args.softlabel and epoch < (
@@ -148,6 +181,7 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
                     f"Best    accuracy (top-1 and 5): {best_acc1:.1f} {best_acc5:.1f}"
                 )
 
-        scheduler.step()
+        if scheduler is not None:
+            scheduler.step()
 
     return best_acc1, acc1

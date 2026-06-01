@@ -1,7 +1,7 @@
 distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
-  workers: 8
+  workers: 2
 dataset:
   dataset: tinyimagenet
   nclass: 200
@@ -18,13 +18,13 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 40
+  evaluation_epochs: 30
   epoch_print_freq: 10
   epoch_eval_interval: 5
   pertrain_epochs: 60
   batch_size: 128
   lr: 0.01
-  adamw_lr: 0.001    
+  adamw_lr: 0.0005
   eval_optimizer: adamw
   momentum: 0.9
   weight_decay: 5e-4
@@ -50,7 +50,10 @@ optimization:
 
 save_path:
   save_dir: "../results/condense"
-  pretrain_dir: '../pretrained_models'
+  pretrain_dir: '../hf_data/pretrained_model'
+
+evaluation:
+  softlabel: true
 
 condense:
   ipc: 50

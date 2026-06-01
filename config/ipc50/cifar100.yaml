@@ -1,7 +1,7 @@
 distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
-  workers: 8
+  workers: 2
   
 dataset:
   dataset: cifar100
@@ -19,7 +19,7 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 2000
+  evaluation_epochs: 1000
   epoch_print_freq: 10
   epoch_eval_interval: 100
   pertrain_epochs: 60

@@ -1,7 +1,7 @@
 distibution_train:
   backend: 'nccl' #  choices=['nccl', 'gloo', 'mpi', 'torch']
   init_method: 'env://'
-  workers: 8
+  workers: 2
   
 dataset:
   dataset: cifar100
@@ -23,13 +23,13 @@ train:
   epoch_print_freq: 10
   epoch_eval_interval: 100
   pertrain_epochs: 60
-  batch_size: 128
+  batch_size: 256
   lr: 0.01
   adamw_lr: 0.001    
-  eval_optimizer: adamw
+  eval_optimizer: adam
   momentum: 0.9
-  weight_decay: 5e-4
-  seed: 0
+  weight_decay: 0.01
+  seed: 3
   model_num: 20
 
 
@@ -39,7 +39,7 @@ augmentation:
   mix_p: 0.5
   rrc: True
   dsa: true
-  dsa_strategy: "color_crop_cutout_flip_scale_rotate"
+  dsa_strategy: "color_crop_flip"
   aug_type: 'color_crop_cutout'
 
 optimization:

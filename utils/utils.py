@@ -1,4 +1,5 @@
 import os
+import hashlib
 import torch
 import random
 import torch.distributed as dist
@@ -23,6 +24,27 @@ from torchvision import datasets, transforms
 from data.transform import transform_imagenet
 from data.dataset import ImageFolder, ImageFolder_mtt
 from data.dataset_statistics import MEANS, STDS
+
+
+def patch_local_cifar100_integrity(data_dir):
+    base_dir = os.path.join(data_dir, "cifar-100-python")
+    required = {"train": "train_list", "test": "test_list", "meta": "meta"}
+    if not all(os.path.exists(os.path.join(base_dir, name)) for name in required):
+        return
+
+    def md5(path):
+        digest = hashlib.md5()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+
+    datasets.CIFAR100.train_list = [["train", md5(os.path.join(base_dir, "train"))]]
+    datasets.CIFAR100.test_list = [["test", md5(os.path.join(base_dir, "test"))]]
+    datasets.CIFAR100.meta = {
+        **datasets.CIFAR100.meta,
+        "md5": md5(os.path.join(base_dir, "meta")),
+    }
 
 
 class BlurPoolConv2d(torch.nn.Module):
@@ -111,6 +133,7 @@ def load_resized_data(
             train_dataset.nclass = 10
 
         elif dataset == "cifar100":
+            patch_local_cifar100_integrity(data_dir)
             train_dataset = datasets.CIFAR100(
                 data_dir, download=True, train=True, transform=transforms.ToTensor()
             )

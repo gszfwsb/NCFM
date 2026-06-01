@@ -4,3 +4,5 @@ dataset/
 *.pyc
 pretrained_models
 dataset
+.venv/
+hf_data/

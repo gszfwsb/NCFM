@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.distributed as dist
 from utils.utils import update_feature_extractor
-from utils.ddp import gather_save_visualize, sync_distributed_metric
+from utils.ddp import gather_save_visualize, sync_distributed_metric, load_state_dict
 from NCFM.NCFM import match_loss, cailb_loss, mutil_layer_match_loss, CFLossFunc
 from NCFM.SampleNet import SampleNet
 from utils.experiment_tracker import TimingTracker, get_time
@@ -330,6 +330,12 @@ class Condenser:
                 args.logger,
                 args.size,
             ).to(args.device)
+            if getattr(args, "eval_load_init", False):
+                init_idx = i % args.model_num
+                init_path = f"{args.pretrain_dir}/premodel{init_idx}_init.pth.tar"
+                load_state_dict(init_path, model)
+                if args.rank == 0:
+                    args.logger(f"Loaded evaluation init checkpoint: {init_path}")
             best_acc, acc = evaluate_syn_data(
                 args, model, syndataloader, val_loader, logger=args.logger
             )
