@@ -7,8 +7,75 @@ from utils.ddp import sync_distributed_metric
 import torch.nn.functional as F
 
 
+class _GraphForwardModule(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input):
+        return self.model(input)
+
+
+class CudaGraphModelRunner:
+    def __init__(self, model, enabled=False, logger=None, rank=0):
+        self.model = model
+        self.enabled = enabled and torch.cuda.is_available()
+        self.logger = logger
+        self.rank = rank
+        self.graph_key = None
+        self.graph_model = None
+        self.wrapper = None
+        self.disabled_reason = None
+        if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+            self.disabled_reason = "DistributedDataParallel is not supported"
+
+    def _log(self, message):
+        if self.logger is not None and self.rank == 0:
+            self.logger(message)
+
+    def __call__(self, input):
+        if not self.enabled:
+            return self.model(input)
+        if self.disabled_reason is not None:
+            if self.disabled_reason:
+                self._log(
+                    f"CUDA graph disabled for evaluation training: {self.disabled_reason}"
+                )
+                self.disabled_reason = ""
+            return self.model(input)
+
+        key = (tuple(input.shape), input.dtype, input.device)
+        if self.graph_key is not None and key != self.graph_key:
+            return self.model(input)
+
+        if self.graph_model is None:
+            try:
+                sample = input.detach().clone()
+                self.wrapper = _GraphForwardModule(self.model)
+                self.graph_model = torch.cuda.make_graphed_callables(
+                    self.wrapper, (sample,)
+                )
+                self.graph_key = key
+                self._log(f"Captured CUDA graph for evaluation train batch shape {tuple(input.shape)}")
+            except Exception as exc:
+                self.disabled_reason = str(exc)
+                self._log(f"CUDA graph disabled for evaluation training: {exc}")
+                return self.model(input)
+
+        return self.graph_model(input)
+
+
 def train_epoch(
-    args, train_loader, model, criterion, optimizer, epoch, aug=None, mixup="cut"
+    args,
+    train_loader,
+    model,
+    criterion,
+    optimizer,
+    epoch,
+    aug=None,
+    mixup="cut",
+    model_runner=None,
+    sync_metrics=True,
 ):
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -38,12 +105,12 @@ def train_epoch(
             ratio = 1 - (
                 (bbx2 - bbx1) * (bby2 - bby1) / (input.size()[-1] * input.size()[-2])
             )
-            output = model(input)
+            output = model_runner(input) if model_runner is not None else model(input)
             loss = criterion(output, target) * ratio + criterion(output, target_b) * (
                 1.0 - ratio
             )
         else:
-            output = model(input)
+            output = model_runner(input) if model_runner is not None else model(input)
             loss = criterion(output, target)
         acc1, acc5 = accuracy(output.data, target, topk=(1, 5))
 
@@ -58,7 +125,10 @@ def train_epoch(
         batch_time.update(time.time() - end)
         end = time.time()
 
-    return sync_distributed_metric([top1.avg, top5.avg, losses.avg])
+    metrics = [top1.avg, top5.avg, losses.avg]
+    if sync_metrics:
+        return sync_distributed_metric(metrics)
+    return metrics
 
 
 def get_softlabel(img, teacher_model, target=None):
@@ -98,6 +168,7 @@ def train_epoch_softlabel(
     epoch,
     aug=None,
     mixup="cut",
+    sync_metrics=True,
 ):
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -153,7 +224,10 @@ def train_epoch_softlabel(
         batch_time.update(time.time() - end)
         end = time.time()
 
-    return sync_distributed_metric([top1.avg, top5.avg, losses.avg])
+    metrics = [top1.avg, top5.avg, losses.avg]
+    if sync_metrics:
+        return sync_distributed_metric(metrics)
+    return metrics
 
 
 def train_epoch_softlabel(
@@ -166,6 +240,7 @@ def train_epoch_softlabel(
     epoch,
     aug=None,
     mixup="cut",
+    sync_metrics=True,
 ):
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -217,10 +292,13 @@ def train_epoch_softlabel(
         batch_time.update(time.time() - end)
         end = time.time()
 
-    return sync_distributed_metric([top1.avg, top5.avg, losses.avg])
+    metrics = [top1.avg, top5.avg, losses.avg]
+    if sync_metrics:
+        return sync_distributed_metric(metrics)
+    return metrics
 
 
-def validate(val_loader, model, criterion):
+def validate(val_loader, model, criterion, sync_metrics=True):
     batch_time = AverageMeter()
     losses = AverageMeter()
     top1 = AverageMeter()
@@ -243,4 +321,7 @@ def validate(val_loader, model, criterion):
         batch_time.update(time.time() - end)
         end = time.time()
 
-    return sync_distributed_metric([top1.avg, top5.avg, losses.avg])
+    metrics = [top1.avg, top5.avg, losses.avg]
+    if sync_metrics:
+        return sync_distributed_metric(metrics)
+    return metrics

@@ -375,15 +375,27 @@ def get_loader(args):
             nclass=args.nclass,
             load_memory=args.load_memory,
         )
-        val_sampler = DistributedSampler(
-            val_dataset, num_replicas=args.world_size, rank=args.rank
+        parallel_repeats = bool(
+            getattr(args, "eval_parallel_repeats", False)
+            or getattr(args, "parallel_repeats", False)
         )
-        val_loader = DataLoader(
-            val_dataset,
-            batch_size=int(args.batch_size / args.world_size),
-            sampler=val_sampler,
-            num_workers=args.workers,
-        )
+        if parallel_repeats:
+            val_loader = DataLoader(
+                val_dataset,
+                batch_size=args.batch_size,
+                shuffle=False,
+                num_workers=args.workers,
+            )
+        else:
+            val_sampler = DistributedSampler(
+                val_dataset, num_replicas=args.world_size, rank=args.rank
+            )
+            val_loader = DataLoader(
+                val_dataset,
+                batch_size=int(args.batch_size / args.world_size),
+                sampler=val_sampler,
+                num_workers=args.workers,
+            )
         return _, val_loader
 
     elif args.run_mode == "Pretrain":

@@ -22,6 +22,22 @@ from data.dataloader import AsyncLoader
 from tqdm import tqdm
 import random
 
+
+def _use_parallel_eval_repeats(args):
+    return bool(
+        getattr(args, "eval_parallel_repeats", False)
+        or getattr(args, "parallel_repeats", False)
+    )
+
+
+def _set_parallel_eval_repeat_seed(args, repeat_idx):
+    seed = int(getattr(args, "seed", 0)) + repeat_idx + 1
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+
+
 class Condenser:
     def __init__(self, args, nclass_list, nchannel, hs, ws, device="cuda"):
         self.timing_tracker = TimingTracker(args.logger)
@@ -171,16 +187,25 @@ class Condenser:
             print("Decode condensed data: ", data_dec.shape)
         train_dataset = TensorDataset(data_dec, target_dec, train_transform)
         nw = 0 if not augment else args.workers
-        train_sampler = DistributedSampler(
-            train_dataset, num_replicas=args.world_size, rank=args.rank, shuffle=True
-        )
-        # train_loader = DataLoader(train_dataset,batch_size=int(args.batch_size/args.world_size),sampler=train_sampler,num_workers=nw)
-        train_loader = MultiEpochsDataLoader(
-            train_dataset,
-            batch_size=int(args.batch_size / args.world_size),
-            sampler=train_sampler,
-            num_workers=nw,
-        )
+        parallel_repeats = args.run_mode == "Evaluation" and _use_parallel_eval_repeats(args)
+        if parallel_repeats:
+            train_loader = MultiEpochsDataLoader(
+                train_dataset,
+                batch_size=args.batch_size,
+                shuffle=True,
+                num_workers=nw,
+            )
+        else:
+            train_sampler = DistributedSampler(
+                train_dataset, num_replicas=args.world_size, rank=args.rank, shuffle=True
+            )
+            # train_loader = DataLoader(train_dataset,batch_size=int(args.batch_size/args.world_size),sampler=train_sampler,num_workers=nw)
+            train_loader = MultiEpochsDataLoader(
+                train_dataset,
+                batch_size=int(args.batch_size / args.world_size),
+                sampler=train_sampler,
+                num_workers=nw,
+            )
         return train_loader
 
     def condense(
@@ -205,12 +230,20 @@ class Condenser:
         )
         if args.sampling_net:
             scheduler_sampling_net = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optim_sampling_net, mode="min", factor=0.5, patience=500, verbose=False
-        )
+                optim_sampling_net,
+                mode="min",
+                factor=getattr(args, "sampling_net_scheduler_gamma", 0.5),
+                patience=getattr(args, "sampling_net_scheduler_patience", 500),
+                verbose=False,
+            )
         else:
             scheduler_sampling_net = None
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optim_img, mode="min", factor=0.5, patience=500, verbose=False
+            optim_img,
+            mode="min",
+            factor=getattr(args, "condense_scheduler_gamma", 0.5),
+            patience=getattr(args, "condense_scheduler_patience", 500),
+            verbose=False,
         )
         gather_save_visualize(self, args)
         if args.local_rank == 0:
@@ -310,6 +343,9 @@ class Condenser:
                 scheduler_sampling_net.step(current_loss)
 
     def evaluate(self, args, syndataloader, val_loader):
+        if _use_parallel_eval_repeats(args):
+            return self.evaluate_parallel_repeats(args, syndataloader, val_loader)
+
         if args.rank == 0:
             args.logger("======================Start Evaluation ======================")
         results = []
@@ -352,10 +388,70 @@ class Condenser:
             args.logger("=" * 50)
             args.logger(f"Evaluation Stop:")
             args.logger(
-                f"Mean Accuracy: {mean_result:.3f}", f"Std Deviation: {std_result:.3f}"
+                f"Mean Accuracy: {mean_result:.3f} Std Deviation: {std_result:.3f}"
             )
             args.logger(f"All result: {[f'{x:.3f}' for x in results]}")
             args.logger("=" * 50)
+
+    def evaluate_parallel_repeats(self, args, syndataloader, val_loader):
+        if args.rank == 0:
+            args.logger("======================Start Parallel Evaluation ======================")
+            args.logger(
+                f"Parallel repeats enabled: world_size={args.world_size}, val_repeat={args.val_repeat}"
+            )
+
+        local_results = []
+        for i in range(args.rank, args.val_repeat, args.world_size):
+            _set_parallel_eval_repeat_seed(args, i)
+            if args.rank == 0:
+                args.logger(
+                    f"======================Repeat {i+1}/{args.val_repeat} Starting =================================================================="
+                )
+            model = define_model(
+                args.dataset,
+                args.norm_type,
+                args.net_type,
+                args.nch,
+                args.depth,
+                args.width,
+                args.nclass,
+                args.logger,
+                args.size,
+            ).to(args.device)
+            if getattr(args, "eval_load_init", False):
+                init_idx = i % args.model_num
+                init_path = f"{args.pretrain_dir}/premodel{init_idx}_init.pth.tar"
+                load_state_dict(init_path, model)
+                if args.rank == 0:
+                    args.logger(f"Loaded evaluation init checkpoint: {init_path}")
+            best_acc, acc = evaluate_syn_data(
+                args, model, syndataloader, val_loader, logger=args.logger
+            )
+            local_results.append((i, best_acc))
+            if args.rank == 0:
+                args.logger(
+                    f"Repeat {i+1}/{args.val_repeat} => The Best Evaluation Acc: {best_acc:.1f} The Last Evaluation Acc :{acc:.1f} \n"
+                )
+
+        gathered = [None for _ in range(args.world_size)] if args.rank == 0 else None
+        dist.gather_object(local_results, gathered, dst=0)
+        if args.rank != 0:
+            return
+
+        results_by_idx = {}
+        for rank_results in gathered:
+            for repeat_idx, best_acc in rank_results:
+                results_by_idx[repeat_idx] = best_acc
+        results = [results_by_idx[i] for i in range(args.val_repeat)]
+        mean_result = np.mean(results)
+        std_result = np.std(results)
+        args.logger("=" * 50)
+        args.logger(f"Evaluation Stop:")
+        args.logger(
+            f"Mean Accuracy: {mean_result:.3f} Std Deviation: {std_result:.3f}"
+        )
+        args.logger(f"All result: {[f'{x:.3f}' for x in results]}")
+        args.logger("=" * 50)
 
     def continue_learning(self, args, syndataloader, val_loader):
         if args.rank == 0:

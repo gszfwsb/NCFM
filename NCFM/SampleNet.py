@@ -37,9 +37,11 @@ class SampleNet(nn.Module):
         if self.t_sigma_num > 0:
             # Initialize the white noise input
             self._t_net_input = torch.randn(
-                self.t_sigma_num, self._input_adv_t_net_dim
+                self.t_sigma_num,
+                self._input_adv_t_net_dim,
+                device=device,
             ) * (self._input_t_var**0.5)
-            self._t_net_input = self._t_net_input.to(device).detach()
+            self._t_net_input = self._t_net_input.detach()
 
             # Forward pass
             a = self._t_net_input
@@ -54,8 +56,10 @@ class SampleNet(nn.Module):
             self._t = a
         else:
             # When t_sigma_num = 0, generate standard Gaussian noise as t
-            self._t = torch.randn(self._input_t_batchsize, self._input_t_dim) * (
-                (self._input_t_var / self._input_t_dim) ** 0.5
-            )
-            self._t = self._t.to(device).detach()
+            self._t = torch.randn(
+                self._input_t_batchsize,
+                self._input_t_dim,
+                device=device,
+            ) * ((self._input_t_var / self._input_t_dim) ** 0.5)
+            self._t = self._t.detach()
         return self._t

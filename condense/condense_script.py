@@ -18,7 +18,17 @@ def main_worker(args):
 
     optim_img = get_optimizer(optimizer=args.optimizer, parameters=condenser.parameters(),lr=args.lr_img, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
     if args.sampling_net:
-        sampling_net = SampleNet(feature_dim=2048).to(args.device)
+        sampling_net_t_batchsize = getattr(args, "sampling_net_t_batchsize", args.num_freqs)
+        sampling_net_t_var = getattr(args, "sampling_net_t_var", 1)
+        sampling_net = SampleNet(
+            feature_dim=2048,
+            t_batchsize=sampling_net_t_batchsize,
+            t_var=sampling_net_t_var,
+        ).to(args.device)
+        if args.rank == 0:
+            args.logger(
+                f"Using SampleNet with t_batchsize={sampling_net_t_batchsize}, t_var={sampling_net_t_var}"
+            )
         optim_sampling_net = get_optimizer(optimizer= "sgd", parameters=sampling_net.parameters(),lr=args.lr_sampling_net, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
     else:
         sampling_net = None

@@ -51,7 +51,11 @@ def read_mean(log_path: Path) -> tuple[float | None, str | None]:
     if not log_path.exists():
         return None, None
     text = log_path.read_text(errors="replace")
-    matches = re.findall(r"Mean Accuracy:\s*([0-9.]+).*?(All result:\s*\[[^\n]+\])", text)
+    matches = re.findall(
+        r"Mean Accuracy:\s*([0-9.]+).*?(All result:\s*\[[^\n]+\])",
+        text,
+        flags=re.S,
+    )
     if not matches:
         return None, None
     mean, all_result = matches[-1]

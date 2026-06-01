@@ -6,7 +6,12 @@ from utils.diffaug import DiffAug
 from utils.utils import define_model
 from utils.ddp import load_state_dict
 import warnings
-from utils.train_val import train_epoch, validate, train_epoch_softlabel
+from utils.train_val import (
+    CudaGraphModelRunner,
+    train_epoch,
+    validate,
+    train_epoch_softlabel,
+)
 
 warnings.filterwarnings("ignore")
 import torch.nn.functional as F
@@ -26,6 +31,11 @@ def SoftCrossEntropy(inputs, target, temperature=1.0, reduction="average"):
 
 # loss_function_kl = nn.KLDivLoss(reduction="batchmean")
 def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
+    parallel_repeats = bool(
+        getattr(args, "eval_parallel_repeats", False)
+        or getattr(args, "parallel_repeats", False)
+    )
+    sync_metrics = not parallel_repeats
     if args.softlabel:
         teacher_model = define_model(
             args.dataset,
@@ -98,9 +108,22 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
     best_acc1, best_acc5 = 0, 0
     acc1, acc5 = 0, 0
     model = model.cuda()
-    model = torch.nn.parallel.DistributedDataParallel(
-        model, device_ids=[args.rank], output_device=args.rank
+    if args.world_size > 1 and not parallel_repeats:
+        model = torch.nn.parallel.DistributedDataParallel(
+            model, device_ids=[args.rank], output_device=args.rank
+        )
+    use_cuda_graph = bool(
+        getattr(args, "eval_cuda_graph", False) or getattr(args, "cuda_graph", False)
     )
+    graph_runner = None
+    if use_cuda_graph and (args.world_size == 1 or parallel_repeats):
+        graph_runner = CudaGraphModelRunner(
+            model, enabled=True, logger=logger, rank=args.rank
+        )
+        if logger is not None and args.rank == 0:
+            logger("CUDA graph is enabled for hard-label evaluation training")
+    elif use_cuda_graph and logger is not None and args.rank == 0:
+        logger("CUDA graph requested but skipped for multi-process DDP evaluation")
 
     if args.dsa:
         aug = DiffAug(strategy=args.dsa_strategy, batch=False)
@@ -115,7 +138,8 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
         disable=args.rank != 0 or not sys.stderr.isatty(),
     )
     for epoch in range(1, args.evaluation_epochs + 1):
-        train_loader.sampler.set_epoch(epoch)
+        if hasattr(train_loader.sampler, "set_epoch"):
+            train_loader.sampler.set_epoch(epoch)
         if args.softlabel and epoch < (
             args.evaluation_epochs - args.epoch_eval_interval
         ):
@@ -129,6 +153,7 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
                 epoch,
                 aug,
                 mixup=args.mixup,
+                sync_metrics=sync_metrics,
             )
         else:
             acc1_tr, acc5_tr, loss_tr = train_epoch(
@@ -140,6 +165,8 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
                 epoch,
                 aug,
                 mixup=args.mixup,
+                model_runner=graph_runner,
+                sync_metrics=sync_metrics,
             )
         if args.rank == 0:
             pbar.set_description(
@@ -163,7 +190,9 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
             or epoch == args.evaluation_epochs
             or (epoch % (args.epoch_eval_interval / 50) == 0 and args.ipc > 50)
         ):
-            acc1, acc5, loss_val = validate(val_loader, model, val_criterion)
+            acc1, acc5, loss_val = validate(
+                val_loader, model, val_criterion, sync_metrics=sync_metrics
+            )
             is_best = acc1 > best_acc1
             if is_best:
                 best_acc1 = acc1

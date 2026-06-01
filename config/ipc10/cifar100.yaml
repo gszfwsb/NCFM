@@ -45,9 +45,13 @@ augmentation:
 optimization:
   optimizer: sgd
   lr_scale_adam: 0.1
-  lr_img: 0.01  
+  lr_img: 0.01
   mom_img: 0.5
   lr_sampling_net: 1e-3
+
+evaluation:
+  cuda_graph: true
+  parallel_repeats: true
 
 save_path:
   save_dir: "../results/condense"
@@ -57,9 +61,15 @@ condense:
   ipc: 10
   num_premodel: 20
   niter: 20000
-  iter_calib: 1 
+  iter_calib: 1
   calib_weight: 1
-  sampling_net: False
+  sampling_net: True
+  sampling_net_t_batchsize: 4096
+  sampling_net_t_var: 1
+  condense_scheduler_patience: 500
+  condense_scheduler_gamma: 0.5
+  sampling_net_scheduler_patience: 500
+  sampling_net_scheduler_gamma: 0.5
   num_freqs: 4096
   dis_metrics: "NCFM"
   factor: 2
