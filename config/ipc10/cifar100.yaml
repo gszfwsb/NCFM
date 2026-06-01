@@ -60,15 +60,15 @@ save_path:
 condense:
   ipc: 10
   num_premodel: 20
-  niter: 20000
+  niter: 12000
   iter_calib: 1
   calib_weight: 1
   sampling_net: True
   sampling_net_t_batchsize: 4096
   sampling_net_t_var: 1
-  condense_scheduler_patience: 500
+  condense_scheduler_patience: 20000
   condense_scheduler_gamma: 0.5
-  sampling_net_scheduler_patience: 500
+  sampling_net_scheduler_patience: 20000
   sampling_net_scheduler_gamma: 0.5
   num_freqs: 4096
   dis_metrics: "NCFM"
