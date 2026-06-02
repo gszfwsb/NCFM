@@ -25,11 +25,27 @@ def main_worker(args):
             t_batchsize=sampling_net_t_batchsize,
             t_var=sampling_net_t_var,
         ).to(args.device)
+        sampling_net_optimizer = getattr(args, "sampling_net_optimizer", "sgd")
+        sampling_net_mom = getattr(args, "sampling_net_mom", args.mom_img)
+        sampling_net_weight_decay = getattr(
+            args, "sampling_net_weight_decay", args.weight_decay
+        )
         if args.rank == 0:
             args.logger(
-                f"Using SampleNet with t_batchsize={sampling_net_t_batchsize}, t_var={sampling_net_t_var}"
+                "Using SampleNet with "
+                f"t_batchsize={sampling_net_t_batchsize}, "
+                f"t_var={sampling_net_t_var}, "
+                f"optimizer={sampling_net_optimizer}, "
+                f"weight_decay={sampling_net_weight_decay}"
             )
-        optim_sampling_net = get_optimizer(optimizer= "sgd", parameters=sampling_net.parameters(),lr=args.lr_sampling_net, mom_img=args.mom_img,weight_decay=args.weight_decay,logger=args.logger)
+        optim_sampling_net = get_optimizer(
+            optimizer=sampling_net_optimizer,
+            parameters=sampling_net.parameters(),
+            lr=args.lr_sampling_net,
+            mom_img=sampling_net_mom,
+            weight_decay=sampling_net_weight_decay,
+            logger=args.logger,
+        )
     else:
         sampling_net = None
         optim_sampling_net = None
