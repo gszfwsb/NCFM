@@ -57,6 +57,7 @@ def run_one(
     ]
     for item in args.set:
         cmd.extend(["--set", item])
+    cmd.extend(["--set", f"train.seed={args.seed_base + repeat_idx}"])
     return subprocess.Popen(
         cmd,
         cwd=ROOT,
@@ -75,6 +76,12 @@ def main() -> int:
     parser.add_argument("--val-repeat", default=10, type=int)
     parser.add_argument("--gpu", default="0,1,2,3,4,5,6,7")
     parser.add_argument("--port-base", default=47000, type=int)
+    parser.add_argument(
+        "--seed-base",
+        default=0,
+        type=int,
+        help="Base seed for per-repeat train.seed overrides.",
+    )
     parser.add_argument(
         "--set",
         action="append",
