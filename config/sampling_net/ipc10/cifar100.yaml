@@ -28,7 +28,7 @@ train:
   adamw_lr: 0.001    
   eval_optimizer: adamw
   momentum: 0.9
-  weight_decay: 5e-4
+  weight_decay: 0.001
   seed: 0
   model_num: 20
 
