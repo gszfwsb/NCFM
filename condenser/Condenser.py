@@ -272,7 +272,8 @@ class Condenser:
                 model_interval=model_interval,
                 data_grad=self.data.grad,
                 optim_sampling_net=optim_sampling_net,
-                sampling_net =sampling_net
+                sampling_net=sampling_net,
+                outer_iter=it,
             )
             if args.iter_calib > 0:
                 calib_loss_total, calib_grad_mean = compute_calib_loss(

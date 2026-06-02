@@ -20,10 +20,12 @@ def main_worker(args):
     if args.sampling_net:
         sampling_net_t_batchsize = getattr(args, "sampling_net_t_batchsize", args.num_freqs)
         sampling_net_t_var = getattr(args, "sampling_net_t_var", 1)
+        sampling_net_t_repeat = getattr(args, "sampling_net_t_repeat", 16)
         sampling_net = SampleNet(
             feature_dim=2048,
             t_batchsize=sampling_net_t_batchsize,
             t_var=sampling_net_t_var,
+            t_repeat=sampling_net_t_repeat,
         ).to(args.device)
         sampling_net_optimizer = getattr(args, "sampling_net_optimizer", "sgd")
         sampling_net_mom = getattr(args, "sampling_net_mom", args.mom_img)
@@ -35,6 +37,7 @@ def main_worker(args):
                 "Using SampleNet with "
                 f"t_batchsize={sampling_net_t_batchsize}, "
                 f"t_var={sampling_net_t_var}, "
+                f"t_repeat={sampling_net_t_repeat}, "
                 f"optimizer={sampling_net_optimizer}, "
                 f"weight_decay={sampling_net_weight_decay}"
             )

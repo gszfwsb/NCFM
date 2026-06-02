@@ -7,10 +7,13 @@ class SampleNet(nn.Module):
     TNet module for adversarial networks with fixed activation layers and predefined parameters.
     """
 
-    def __init__(self, feature_dim=64, t_batchsize=64, t_var=1):
+    def __init__(self, feature_dim=64, t_batchsize=64, t_var=1, t_repeat=16):
         super(SampleNet, self).__init__()
         self.feature_dim = feature_dim  # Feature dimension
-        self.t_sigma_num = t_batchsize // 16  # Number of sigmas for t_net
+        self.t_repeat = max(1, int(t_repeat))
+        self.t_sigma_num = max(
+            1, (t_batchsize + self.t_repeat - 1) // self.t_repeat
+        )  # Number of sigmas for t_net
         self._input_adv_t_net_dim = feature_dim  # Input noise dimension
         self._input_t_dim = feature_dim  # t_net input dimension
         self._input_t_batchsize = t_batchsize  # Batch size
@@ -48,7 +51,9 @@ class SampleNet(nn.Module):
             for layer in self.t_layers_list:
                 a = layer(a)
 
-            a = a.repeat(int(self._input_t_batchsize / self.t_sigma_num), 1)
+            a = a.repeat(self.t_repeat, 1)
+            if a.size(0) != self._input_t_batchsize:
+                a = a[: self._input_t_batchsize]
 
             # Generate the final t value
             # self._t = torch.randn(self._input_t_batchsize, self._input_t_dim) * ((self._input_t_var / self._input_t_dim) ** 0.5)
