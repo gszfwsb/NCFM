@@ -45,9 +45,13 @@ augmentation:
 optimization:
   optimizer: adamw
   lr_scale_adam: 0.1
-  lr_img: 0.01  
+  lr_img: 0.01
   mom_img: 0.5
   lr_sampling_net: 1e-3
+
+evaluation:
+  cuda_graph: true
+  parallel_repeats: true
 
 save_path:
   save_dir: "../results/condense"

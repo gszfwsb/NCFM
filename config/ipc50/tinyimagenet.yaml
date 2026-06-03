@@ -18,9 +18,9 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 30
+  evaluation_epochs: 36
   epoch_print_freq: 10
-  epoch_eval_interval: 5
+  epoch_eval_interval: 7
   pertrain_epochs: 60
   batch_size: 128
   lr: 0.01
@@ -54,6 +54,8 @@ save_path:
 
 evaluation:
   softlabel: true
+  cuda_graph: true
+  parallel_repeats: true
 
 condense:
   ipc: 50
