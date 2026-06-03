@@ -23,7 +23,7 @@ train:
   epoch_print_freq: 10
   epoch_eval_interval: 100
   pertrain_epochs: 60
-  batch_size: 128
+  batch_size: 1024
   lr: 0.01
   adamw_lr: 0.001    
   eval_optimizer: adamw

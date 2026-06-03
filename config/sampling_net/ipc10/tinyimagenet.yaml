@@ -18,13 +18,13 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 300
+  evaluation_epochs: 350
   epoch_print_freq: 10
   epoch_eval_interval: 50
   pertrain_epochs: 60
   batch_size: 128
   lr: 0.01
-  adamw_lr: 0.0005
+  adamw_lr: 0.0004
   eval_optimizer: adamw
   momentum: 0.9
   weight_decay: 5e-4

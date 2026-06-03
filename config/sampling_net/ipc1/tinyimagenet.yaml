@@ -20,7 +20,7 @@ network:
 train:
   evaluation_epochs: 2000
   epoch_print_freq: 10
-  epoch_eval_interval: 100
+  epoch_eval_interval: 50
   pertrain_epochs: 60
   batch_size: 128
   lr: 0.01
