@@ -18,7 +18,7 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 30
+  evaluation_epochs: 40
   epoch_print_freq: 10
   epoch_eval_interval: 5
   pertrain_epochs: 60

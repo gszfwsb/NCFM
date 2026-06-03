@@ -168,6 +168,7 @@ def train_epoch_softlabel(
     epoch,
     aug=None,
     mixup="cut",
+    model_runner=None,
     sync_metrics=True,
 ):
     batch_time = AverageMeter()
@@ -203,13 +204,13 @@ def train_epoch_softlabel(
             ratio = 1 - (
                 (bbx2 - bbx1) * (bby2 - bby1) / (input.size()[-1] * input.size()[-2])
             )
-            output = model(input)
+            output = model_runner(input) if model_runner is not None else model(input)
             output = F.log_softmax(output / args.temperature, dim=1)
             loss = criterion(output, soft_label, args.temperature) * ratio + criterion(
                 output, soft_label[rand_index, :], args.temperature
             ) * (1.0 - ratio)
         else:
-            output = model(input)
+            output = model_runner(input) if model_runner is not None else model(input)
             loss = criterion(output, soft_label, args.temperature)
         acc1, acc5 = accuracy(output.data, target, topk=(1, 5))
 
@@ -240,6 +241,7 @@ def train_epoch_softlabel(
     epoch,
     aug=None,
     mixup="cut",
+    model_runner=None,
     sync_metrics=True,
 ):
     batch_time = AverageMeter()
@@ -273,12 +275,12 @@ def train_epoch_softlabel(
             ratio = 1 - (
                 (bbx2 - bbx1) * (bby2 - bby1) / (input.size()[-1] * input.size()[-2])
             )
-            output = model(input)
+            output = model_runner(input) if model_runner is not None else model(input)
             loss = criterion(output, soft_label) * ratio + criterion(
                 output, soft_label[rand_index, :]
             ) * (1.0 - ratio)
         else:
-            output = model(input)
+            output = model_runner(input) if model_runner is not None else model(input)
             loss = criterion(output, soft_label)
         acc1, acc5 = accuracy(output.data, target, topk=(1, 5))
         losses.update(loss.item(), input.size(0))

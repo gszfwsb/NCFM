@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run evaluation repeats as parallel single-GPU CUDA-graph jobs."""
+"""Run evaluation repeats as parallel single-GPU jobs."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def run_one(
         "--port",
         str(port),
         "--set",
-        "evaluation.cuda_graph=true",
+        f"evaluation.cuda_graph={str(args.cuda_graph).lower()}",
     ]
     for item in args.set:
         cmd.extend(["--set", item])
@@ -87,6 +87,19 @@ def main() -> int:
         action="append",
         default=[],
         help="Override YAML value passed through to ncfm_eval_tuner.py",
+    )
+    parser.add_argument(
+        "--cuda-graph",
+        dest="cuda_graph",
+        action="store_true",
+        default=True,
+        help="Enable CUDA graph for evaluation training forwards.",
+    )
+    parser.add_argument(
+        "--no-cuda-graph",
+        dest="cuda_graph",
+        action="store_false",
+        help="Disable CUDA graph for paired timing comparisons.",
     )
     args = parser.parse_args()
 

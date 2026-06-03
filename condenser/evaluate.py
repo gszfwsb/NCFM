@@ -121,7 +121,7 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
             model, enabled=True, logger=logger, rank=args.rank
         )
         if logger is not None and args.rank == 0:
-            logger("CUDA graph is enabled for hard-label evaluation training")
+            logger("CUDA graph is enabled for evaluation training forward pass")
     elif use_cuda_graph and logger is not None and args.rank == 0:
         logger("CUDA graph requested but skipped for multi-process DDP evaluation")
 
@@ -153,6 +153,7 @@ def evaluate_syn_data(args, model, train_loader, val_loader, logger=None):
                 epoch,
                 aug,
                 mixup=args.mixup,
+                model_runner=graph_runner,
                 sync_metrics=sync_metrics,
             )
         else:
