@@ -53,7 +53,7 @@ def run_one(
         "--port",
         str(port),
         "--set",
-        f"evaluation.cuda_graph={str(args.cuda_graph).lower()}",
+        f"cuda_graph={str(args.cuda_graph).lower()}",
     ]
     for item in args.set:
         cmd.extend(["--set", item])

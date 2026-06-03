@@ -19,14 +19,16 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 4000
+  evaluation_epochs: 3000
   epoch_print_freq: 10
   epoch_eval_interval: 20
   pertrain_epochs: 60
   batch_size: 256
   lr: 0.01
-  adamw_lr: 0.001    
-  eval_optimizer: adamw
+  adamw_lr: 0.001
+  eval_optimizer: sgd
+  eval_scheduler: multistep
+  eval_scheduler_gamma: 0.55
   momentum: 0.9
   weight_decay: 0.01
   seed: 0
@@ -45,9 +47,13 @@ augmentation:
 optimization:
   optimizer: adamw
   lr_scale_adam: 0.1
-  lr_img: 0.01  
+  lr_img: 0.01
   mom_img: 0.5
   lr_sampling_net: 1e-3
+
+evaluation:
+  cuda_graph: true
+  parallel_repeats: true
 
 save_path:
   save_dir: "../results/condense"
