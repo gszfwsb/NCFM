@@ -19,7 +19,7 @@ network:
   width: 1.0
 
 train:
-  evaluation_epochs: 2000
+  evaluation_epochs: 3000
   epoch_print_freq: 10
   epoch_eval_interval: 20
   pertrain_epochs: 60
@@ -72,7 +72,8 @@ condense:
   decode_type: 'single' # choices=['single', 'multi', 'bound']
   teacher_model_epoch: 20
   sampling_net_t_batchsize: 4096
-  sampling_net_t_var: 1
+  sampling_net_t_var: 0.5
+  sampling_net_t_repeat: 1
   condense_scheduler_patience: 20000
   condense_scheduler_gamma: 0.5
   sampling_net_scheduler_patience: 20000
