@@ -1,0 +1,66 @@
+distibution_train:
+  backend: gloo
+  init_method: file:////data/zengqiang/experiments/NCFMproject_0603/experiments/kvasir_full_dd_after_teacher_audit_20260621/rdzv/kvasirv2_1782005764072840.store?rank=0&world_size=1
+  workers: 8
+dataset:
+  dataset: kvasirv2
+  nclass: 8
+  size: 128
+  data_dir: /data/zengqiang/experiments/NCFMproject_0603/experiments/kvasir_full_dd_after_teacher_audit_20260621/data
+  load_memory: false
+  batch_real: 512
+  nch: 3
+network:
+  net_type: convnet
+  norm_type: instance
+  depth: 6
+  width: 1.5
+train:
+  evaluation_epochs: 2000
+  epoch_print_freq: 10
+  epoch_eval_interval: 100
+  pertrain_epochs: 100
+  batch_size: 48
+  lr: 0.01
+  adamw_lr: 0.001
+  eval_optimizer: adamw
+  momentum: 0.9
+  weight_decay: 0.0005
+  seed: 0
+  model_num: 20
+augmentation:
+  mixup: cut
+  beta: 1.0
+  mix_p: 0.5
+  rrc: true
+  dsa: true
+  dsa_strategy: color_crop_cutout_flip_scale_rotate
+  aug_type: color_crop_cutout
+optimization:
+  optimizer: adamw
+  lr_scale_adam: 0.1
+  lr_img: 0.01
+  mom_img: 0.5
+  lr_sampling_net: 0.001
+save_path:
+  save_dir: /data/zengqiang/experiments/NCFMproject_0603/experiments/kvasir_full_dd_after_teacher_audit_20260621/runs/kvasirv2/ipc10/Kvasir_B_NCFM_T4096/results/condense
+  pretrain_dir: /data/zengqiang/experiments/NCFMproject_0603/experiments/kvasir_full_dd_after_teacher_audit_20260621/checkpoints/pretrain
+condense:
+  ipc: 10
+  num_premodel: 20
+  niter: 20000
+  iter_calib: 1
+  calib_weight: 1
+  sampling_net: true
+  num_freqs: 4096
+  dis_metrics: NCFM
+  force_final_feature_match: true
+  factor: 2
+  alpha_for_loss: 0.5
+  beta_for_loss: 0.5
+  decode_type: single
+  teacher_model_epoch: 20
+  use_dr_ltm_ncfd: false
+  use_discrepancy_attention_ncfd: false
+  use_feature_map_token_ncfd: false
+  use_local_patch_feature_ncfd: false

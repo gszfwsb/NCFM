@@ -1,0 +1,17 @@
+pretrained_models/
+results/
+dataset/
+*.pyc
+pretrained_models
+dataset
+__pycache__/
+.ipynb_checkpoints/
+logs/
+runs/
+reports/
+checkpoints/
+data/medmnist/
+*_executed.ipynb
+*.pth
+*.pt
+*.pth.tar

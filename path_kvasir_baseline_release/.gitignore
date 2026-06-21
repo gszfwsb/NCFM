@@ -1,0 +1,30 @@
+# Generated data / model artifacts
+data/
+datasets/
+checkpoints/
+pretrained_models/
+results/
+runs/
+wandb/
+logs/
+buffer/buffers/
+*.pt
+*.pth
+*.pth.tar
+*.ckpt
+*.npz
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Local machine clutter
+.DS_Store
+Thumbs.db
+

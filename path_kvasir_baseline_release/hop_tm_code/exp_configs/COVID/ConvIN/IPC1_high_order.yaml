@@ -1,0 +1,34 @@
+dataset: COVID
+device: [0]
+
+model: ConvNetD5
+ipc: 1
+syn_steps: 80
+expert_epochs: 2
+lr_img: 100
+lr_teacher: 0.001
+
+buffer_path: ../buffer/buffers/
+
+data_path: data_path
+ema_decay: 0.995
+Iteration: 10000
+batch_syn: 10
+
+# wandb
+project: covid_high_order
+
+num_eval: 1
+eval_it: 500
+skip_first_eva: True
+
+pix_init: real
+high_order: True
+base_threshold: 1e-10
+growing_factor: 1.3
+lamb: 1.0
+batch_train: 128
+min_start_epoch: 0
+max_start_epoch: 4
+lr_lr: 0.0000001
+zca: False
